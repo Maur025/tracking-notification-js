@@ -15,6 +15,7 @@ export class SocketServer {
 
 		console.info("[WS-SERVER-LISTEN] Configuring WebSocket listeners...");
 
+		// eslint-disable-next-line no-unused-vars
 		this.#wsServer.on("connection", (socket) => {});
 	}
 
