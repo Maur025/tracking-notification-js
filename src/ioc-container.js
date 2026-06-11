@@ -1,5 +1,10 @@
 import { asClass, asFunction, asValue, createContainer, InjectionMode, listModules } from "awilix";
 import { environments } from "./environments.js";
+import express from "express";
+import ioredis from "ioredis";
+import bullmq from "bullmq";
+import nodemailer from "nodemailer";
+import playwright from "playwright";
 import { ServerApp } from "./server/server-app.js";
 import { WhatsappController } from "./whatsapp/controller/whatsapp.controller.js";
 import { EmailController } from "./email/controller/email.controller.js";
@@ -16,8 +21,17 @@ const controllerModules = listModules("**/*.controller.js").map((module) => {
 });
 
 iocContainer.register({
+	//external dependencies
+	express: asValue(express),
+	ioredis: asValue(ioredis),
+	bullmq: asValue(bullmq),
+	nodemailer: asValue(nodemailer),
+	playwright: asValue(playwright),
+
+	//Container
 	container: asValue(iocContainer),
 	containerAdapter: asClass(ContainerAdapter).singleton(),
+
 	// Configurations
 	environments: asValue(environments),
 	serverApp: asClass(ServerApp).singleton(),

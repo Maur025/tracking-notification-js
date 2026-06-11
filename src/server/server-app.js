@@ -1,18 +1,19 @@
 import compression from "compression";
 import cors from "cors";
-import express from "express";
 import { createServer } from "http";
 
 export class ServerApp {
+	#express;
 	#expressApp;
 	#httpServer;
 	#env;
 	#controllers;
 
-	constructor({ environments, controllers }) {
+	constructor({ environments, controllers, express }) {
 		this.#env = environments;
 		this.#controllers = controllers;
-		this.#expressApp = express();
+		this.#express = express;
+		this.#expressApp = this.#express();
 	}
 
 	initialize() {
@@ -24,16 +25,16 @@ export class ServerApp {
 				allowedHeaders: ["Content-Type", "Authorization"],
 			}),
 		);
-		this.#expressApp.use(express.json({ limit: "25mb" }));
-		this.#expressApp.use(express.text({ limit: "25mb" }));
+		this.#expressApp.use(this.#express.json({ limit: "25mb" }));
+		this.#expressApp.use(this.#express.text({ limit: "25mb" }));
 		this.#expressApp.use(
-			express.urlencoded({
+			this.#express.urlencoded({
 				extended: true,
 				parameterLimit: 100_000,
 				limit: "50mb",
 			}),
 		);
-		this.#expressApp.use("/", express.static(this.#env.APP_STATIC_PUBLIC_PATH));
+		this.#expressApp.use("/", this.#express.static(this.#env.APP_STATIC_PUBLIC_PATH));
 
 		this.#controllers.forEach((controller) => {
 			if (typeof controller.registerRoutes === "function") {
