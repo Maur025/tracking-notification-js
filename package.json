@@ -44,5 +44,9 @@
 		"eslint-plugin-jest": "^29.15.2",
 		"globals": "^17.6.0",
 		"jest": "^30.4.2"
-	}
+	},
+	"engines": {
+		"node": ">=24.0.0"
+	},
+	"packageManager": "pnpm@11.1.3"
 }
