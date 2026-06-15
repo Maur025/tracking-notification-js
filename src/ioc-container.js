@@ -17,6 +17,10 @@ import { EmailQueue } from "./email/email-queue.js";
 import { WhatsappWorker } from "./whatsapp/whatsapp-worker.js";
 import { WhatsappWorkerService } from "./whatsapp/whatsapp-worker.service.js";
 import { WhatsappQueue } from "./whatsapp/whatsapp-queue.js";
+import { SmsWorker } from "./sms/sms-worker.js";
+import { SmsWorkerService } from "./sms/sms-worker.service.js";
+import { SmsQueue } from "./sms/sms-queue.js";
+import { SmsController } from "./sms/sms.controller.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -47,14 +51,17 @@ iocContainer.register({
 	// bullmq workers
 	emailWorker: asClass(EmailWorker).singleton(),
 	whatsappWorker: asClass(WhatsappWorker).singleton(),
+	smsWorker: asClass(SmsWorker).singleton(),
 
 	// worker services
 	emailWorkerService: asClass(EmailWorkerService).singleton(),
 	whatsappWorkerService: asClass(WhatsappWorkerService).singleton(),
+	smsWorkerService: asClass(SmsWorkerService).singleton(),
 
 	// bullmq queues
 	emailQueue: asClass(EmailQueue).singleton(),
 	whatsappQueue: asClass(WhatsappQueue).singleton(),
+	smsQueue: asClass(SmsQueue).singleton(),
 
 	// socket server
 	socketServer: asClass(SocketServer).singleton(),
@@ -62,7 +69,7 @@ iocContainer.register({
 	//Controllers
 	whatsappController: asClass(WhatsappController).singleton(),
 	emailController: asClass(EmailController).singleton(),
-
+	smsController: asClass(SmsController).singleton(),
 	controllers: asFunction(function () {
 		const containerInstance = iocContainer;
 
