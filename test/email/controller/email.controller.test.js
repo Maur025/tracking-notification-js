@@ -2,12 +2,16 @@ import { jest } from "@jest/globals";
 import { EmailController } from "../../../src/email/controller/email.controller";
 
 describe("EmailController", () => {
+	let emailQueueMock;
+
 	let app;
 	let appPostMock;
 	let appGetMock;
 	let emailController;
 
 	beforeEach(() => {
+		emailQueueMock = {};
+
 		appPostMock = jest.fn();
 		appGetMock = jest.fn();
 
@@ -16,7 +20,7 @@ describe("EmailController", () => {
 			post: appPostMock,
 		};
 
-		emailController = new EmailController();
+		emailController = new EmailController({ emailQueueMock });
 	});
 
 	test("should register routes correctly", () => {
