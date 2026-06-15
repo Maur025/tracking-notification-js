@@ -8,6 +8,7 @@ async function bootstrap() {
 	const redisApp = iocContainer.resolve("redisApp");
 	const emailWorker = iocContainer.resolve("emailWorker");
 	const whatsappWorker = iocContainer.resolve("whatsappWorker");
+	const smsWorker = iocContainer.resolve("smsWorker");
 	const serverApp = iocContainer.resolve("serverApp");
 	const socketServer = iocContainer.resolve("socketServer");
 
@@ -15,6 +16,7 @@ async function bootstrap() {
 		redisApp.initialize();
 		emailWorker.initialize(redisApp.getRedisConnection());
 		whatsappWorker.initialize(redisApp.getRedisConnection());
+		smsWorker.initialize(redisApp.getRedisConnection());
 		serverApp.initialize();
 		socketServer.initialize(serverApp.getHttpServer());
 
