@@ -10,6 +10,10 @@ import { WhatsappController } from "./whatsapp/controller/whatsapp.controller.js
 import { EmailController } from "./email/controller/email.controller.js";
 import { SocketServer } from "./socket/socket-server.js";
 import { ContainerAdapter } from "./container-adapter.js";
+import { RedisApp } from "./redis/redis-app.js";
+import { EmailWorker } from "./email/email-worker.js";
+import { EmailWorkerService } from "./email/email-worker.service.js";
+import { EmailQueue } from "./email/email-queue.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -35,6 +39,16 @@ iocContainer.register({
 	// Configurations
 	environments: asValue(environments),
 	serverApp: asClass(ServerApp).singleton(),
+	redisApp: asClass(RedisApp).singleton(),
+
+	// bullmq workers
+	emailWorker: asClass(EmailWorker).singleton(),
+
+	// worker services
+	emailWorkerService: asClass(EmailWorkerService).singleton(),
+
+	// bullmq queues
+	emailQueue: asClass(EmailQueue).singleton(),
 
 	// socket server
 	socketServer: asClass(SocketServer).singleton(),

@@ -5,10 +5,14 @@ import { iocContainer } from "./ioc-container.js";
 async function bootstrap() {
 	overrideLog();
 
+	const redisApp = iocContainer.resolve("redisApp");
+	const emailWorker = iocContainer.resolve("emailWorker");
 	const serverApp = iocContainer.resolve("serverApp");
 	const socketServer = iocContainer.resolve("socketServer");
 
 	try {
+		redisApp.initialize();
+		emailWorker.initialize(redisApp.getRedisConnection());
 		serverApp.initialize();
 		socketServer.initialize(serverApp.getHttpServer());
 
