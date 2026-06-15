@@ -1,11 +1,13 @@
 import { jest } from "@jest/globals";
-import { WhatsappController } from "../../../src/whatsapp/controller/whatsapp.controller";
+import { WhatsappController } from "../../src/whatsapp/whatsapp.controller";
 
 describe("WhatsappController", () => {
 	let app;
 	let appPostMock;
 	let appGetMock;
 	let whatsappController;
+
+	const mockWhatsappQueue = {};
 
 	beforeEach(() => {
 		appPostMock = jest.fn();
@@ -16,7 +18,7 @@ describe("WhatsappController", () => {
 			get: appGetMock,
 		};
 
-		whatsappController = new WhatsappController();
+		whatsappController = new WhatsappController({ whatsappQueue: mockWhatsappQueue });
 	});
 
 	test("should register routes correctly", () => {
