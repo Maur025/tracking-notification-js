@@ -1,5 +1,5 @@
 import { jest } from "@jest/globals";
-import { EmailController } from "../../../src/email/controller/email.controller";
+import { EmailController } from "../../src/email/email.controller";
 
 describe("EmailController", () => {
 	let emailQueueMock;

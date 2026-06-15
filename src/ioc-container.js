@@ -6,14 +6,17 @@ import bullmq from "bullmq";
 import nodemailer from "nodemailer";
 import playwright from "playwright";
 import { ServerApp } from "./server/server-app.js";
-import { WhatsappController } from "./whatsapp/controller/whatsapp.controller.js";
-import { EmailController } from "./email/controller/email.controller.js";
+import { WhatsappController } from "./whatsapp/whatsapp.controller.js";
+import { EmailController } from "./email/email.controller.js";
 import { SocketServer } from "./socket/socket-server.js";
 import { ContainerAdapter } from "./container-adapter.js";
 import { RedisApp } from "./redis/redis-app.js";
 import { EmailWorker } from "./email/email-worker.js";
 import { EmailWorkerService } from "./email/email-worker.service.js";
 import { EmailQueue } from "./email/email-queue.js";
+import { WhatsappWorker } from "./whatsapp/whatsapp-worker.js";
+import { WhatsappWorkerService } from "./whatsapp/whatsapp-worker.service.js";
+import { WhatsappQueue } from "./whatsapp/whatsapp-queue.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -43,12 +46,15 @@ iocContainer.register({
 
 	// bullmq workers
 	emailWorker: asClass(EmailWorker).singleton(),
+	whatsappWorker: asClass(WhatsappWorker).singleton(),
 
 	// worker services
 	emailWorkerService: asClass(EmailWorkerService).singleton(),
+	whatsappWorkerService: asClass(WhatsappWorkerService).singleton(),
 
 	// bullmq queues
 	emailQueue: asClass(EmailQueue).singleton(),
+	whatsappQueue: asClass(WhatsappQueue).singleton(),
 
 	// socket server
 	socketServer: asClass(SocketServer).singleton(),
