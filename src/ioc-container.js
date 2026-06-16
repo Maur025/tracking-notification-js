@@ -21,6 +21,7 @@ import { SmsWorker } from "./sms/sms-worker.js";
 import { SmsWorkerService } from "./sms/sms-worker.service.js";
 import { SmsQueue } from "./sms/sms-queue.js";
 import { SmsController } from "./sms/sms.controller.js";
+import { SocketClient } from "./socket/socket-client.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -65,6 +66,9 @@ iocContainer.register({
 
 	// socket server
 	socketServer: asClass(SocketServer).singleton(),
+
+	// socket client
+	socketClient: asClass(SocketClient).singleton(),
 
 	//Controllers
 	whatsappController: asClass(WhatsappController).singleton(),

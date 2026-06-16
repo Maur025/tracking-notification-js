@@ -24,6 +24,8 @@ export class EmailWorker {
 			{
 				connection: redisConnection,
 				concurrency: 15,
+				removeOnComplete: { count: 1000 },
+				removeOnFail: { count: 2000 },
 			},
 		);
 
