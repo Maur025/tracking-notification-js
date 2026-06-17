@@ -27,16 +27,16 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
-      - name: config github http access
-        run: |
-          git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git@github.com:"
-          git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git+ssh://git@github.com:"
-          git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "ssh://git@github.com:"
+      # - name: config github http access
+      #   run: |
+      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git@github.com:"
+      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git+ssh://git@github.com:"
+      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "ssh://git@github.com:"
 
       - name: update tracking-common dependency
         env:
           TRACKING_COMMON_ACCESS: ${{ secrets.TRACKING_COMMON_ACCESS }}
-        run: sed -i 's|"file:../tracking-common"|"git+https://x-access-token:${TRACKING_COMMON_ACCESS}@github.com/Maur025/tracking-common.git#main"|g' package.json
+        run: sed -i "s|\"file:../tracking-common\"|\"git+https://x-access-token:${TRACKING_COMMON_ACCESS}://@github.com/Maur025/tracking-common.git\"|g" package.json
 
       - name: Update tracking-common dependency in pnpm-lock.yaml
         run: pnpm install --lockfile-only
