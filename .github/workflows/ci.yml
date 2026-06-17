@@ -27,22 +27,23 @@ jobs:
           node-version: ${{ matrix.node-version }}
           cache: "pnpm"
 
-      # - name: config github http access
-      #   run: |
-      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git@github.com:"
-      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "git+ssh://git@github.com:"
-      #     git config --global url."https://x-access-token:${{ secrets.TRACKING_COMMON_ACCESS }}@github.com/".insteadOf "ssh://git@github.com:"
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: 'unimportant'
+          if_key_exists: replace
+      
+      - name: Adding Know Host
+        run: ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
 
       - name: update tracking-common dependency
-        env:
-          TRACKING_COMMON_ACCESS: ${{ secrets.TRACKING_COMMON_ACCESS }}
-        run: sed -i "s|\"file:../tracking-common\"|\"git+https://x-access-token:${TRACKING_COMMON_ACCESS}://@github.com/Maur025/tracking-common.git\"|g" package.json
-
-      - name: Update tracking-common dependency in pnpm-lock.yaml
-        run: pnpm install --lockfile-only
+        run: sed -i "s|\"file:../tracking-common\"|\"git+ssh://git@github.com/Maur025/tracking-common.git#main\"|g" package.json
 
       - name: Install dependencies
-        run: pnpm install --frozen-lockfile
+        run: |
+          pnpm install --lockfile-only
+          pnpm install --frozen-lockfile
 
       - name: Syntax check
         run: pnpm lint
