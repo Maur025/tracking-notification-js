@@ -23,6 +23,8 @@ export class WhatsappWorker {
 			async (job) => this.#handleJob(job),
 			{
 				connection: redisConnection,
+				removeOnComplete: { count: 1000 },
+				removeOnFail: { count: 2000 },
 			},
 		);
 
