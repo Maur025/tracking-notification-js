@@ -30,6 +30,9 @@ jobs:
       - name: update tracking-common dependency
         run: sed -i 's|"file:../tracking-common"|"git+https://x-access-token:${TRACKING_COMMON_ACCESS}@github.com/Maur025/tracking-common.git#main"|g' package.json
 
+      - name: Update tracking-common dependency in pnpm-lock.yaml
+        run: pnpm install --lockfile-only
+
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
