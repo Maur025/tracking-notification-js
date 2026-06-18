@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 import { jest } from "@jest/globals";
 import { EmailNotifier } from "../../src/email/email-notifier";
 
