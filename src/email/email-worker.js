@@ -42,12 +42,12 @@ export class EmailWorker {
 
 		await this.#emailWorkerService.sendNotification({ jobData: data });
 
-		console.info(`Email job completed successfully for job ID: ${job.id}`);
+		// console.info(`Email job completed successfully for job ID: ${job.id}`);
 	}
 
 	onCompleted() {
 		this.#emailWorker.on("completed", (job) => {
-			console.log(`Email job with ID ${job.id} has been completed.`);
+			console.info(`Email job with ID ${job.id} has been completed.`);
 		});
 	}
 

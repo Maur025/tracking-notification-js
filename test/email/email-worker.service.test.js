@@ -3,12 +3,19 @@ import { EmailWorkerService } from "../../src/email/email-worker.service";
 
 describe("EmailWorkerService", () => {
 	let emailWorkerService;
-	let consoleLogSpy;
+	let consoleErrorSpy;
+
+	let mockEmailNotifier;
+	let mockEmailNotifierSend;
 
 	beforeEach(() => {
-		consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+		mockEmailNotifierSend = jest.fn();
+		mockEmailNotifier = {
+			send: mockEmailNotifierSend,
+		};
 
-		emailWorkerService = new EmailWorkerService();
+		emailWorkerService = new EmailWorkerService({ emailNotifier: mockEmailNotifier });
 	});
 
 	afterEach(() => {
@@ -16,11 +23,30 @@ describe("EmailWorkerService", () => {
 	});
 
 	test("should send email notification", async () => {
-		const message = "Sending email notification with data:";
-		const jobData = { greeting: "Hello, World!" };
+		const jobData = {
+			message: "Test message",
+			subject: "Test subject",
+			toList: ["test@example.com"],
+			notificationType: "SOME",
+		};
 
-		emailWorkerService.sendNotification({ jobData });
+		await emailWorkerService.sendNotification({ jobData });
 
-		expect(consoleLogSpy).toHaveBeenCalledWith(message, jobData);
+		expect(consoleErrorSpy).not.toHaveBeenCalled();
+		expect(mockEmailNotifierSend).toHaveBeenCalledWith(
+			expect.objectContaining({ ...jobData, html: jobData.message, text: jobData.message }),
+		);
+	});
+
+	test("should log error for invalid email notification data", async () => {
+		const invalidJobData = {
+			message: "Test message",
+			subject: "Test subject",
+		};
+
+		await emailWorkerService.sendNotification({ jobData: invalidJobData });
+
+		expect(consoleErrorSpy).toHaveBeenCalledWith("Invalid email notification data");
+		expect(mockEmailNotifierSend).not.toHaveBeenCalled();
 	});
 });
