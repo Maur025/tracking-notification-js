@@ -1,7 +1,20 @@
 export class EmailWorkerService {
-	constructor() {}
+	#emailNotifier;
+
+	constructor({ emailNotifier }) {
+		this.#emailNotifier = emailNotifier;
+	}
 
 	async sendNotification({ jobData }) {
-		console.log("Sending email notification with data:", jobData);
+		if (!jobData.message || !jobData.subject || !jobData.toList || !jobData.notificationType) {
+			console.error("Invalid email notification data");
+			return;
+		}
+
+		await this.#emailNotifier.send({
+			...jobData,
+			html: jobData.message,
+			text: jobData.message,
+		});
 	}
 }

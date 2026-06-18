@@ -153,3 +153,5 @@ dist
 
 # temporally data of playwright
 tmp/
+
+src/email/mock-connection-email-data.js

@@ -22,6 +22,8 @@ import { SmsWorkerService } from "./sms/sms-worker.service.js";
 import { SmsQueue } from "./sms/sms-queue.js";
 import { SmsController } from "./sms/sms.controller.js";
 import { SocketClient } from "./socket/socket-client.js";
+import { EmailProvider } from "./email/email-provider.js";
+import { EmailNotifier } from "./email/email-notifier.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -79,6 +81,12 @@ iocContainer.register({
 
 		return controllerModules.map((module) => containerInstance.resolve(module.name));
 	}).singleton(),
+
+	// providers
+	emailProvider: asClass(EmailProvider).singleton(),
+
+	// notifiers
+	emailNotifier: asClass(EmailNotifier).singleton(),
 });
 
 export { iocContainer };
