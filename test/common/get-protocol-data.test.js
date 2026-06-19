@@ -1,3 +1,4 @@
+import { describe, test, expect } from "@jest/globals";
 import { getProtocolData } from "../../src/common/get-protocol-data";
 
 describe("getProtocolData", () => {

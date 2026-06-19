@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
 import { WhatsappQueue } from "../../src/whatsapp/whatsapp-queue";
 
 describe("WhatsappQueue", () => {

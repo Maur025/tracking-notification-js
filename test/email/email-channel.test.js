@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
 import { EmailChannel } from "../../src/email/email-channel";
 
 describe("EmailChannel", () => {
@@ -24,7 +24,7 @@ describe("EmailChannel", () => {
 		password: "password",
 	};
 
-	beforeAll(() => {
+	beforeEach(() => {
 		consoleInfoSpy = jest.spyOn(console, "info").mockImplementation(() => {});
 		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 

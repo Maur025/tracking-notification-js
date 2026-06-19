@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
 import { EmailWorkerService } from "../../src/email/email-worker.service";
 
 describe("EmailWorkerService", () => {

@@ -1,5 +1,5 @@
+import { jest, describe, beforeEach, test, expect } from "@jest/globals";
 import { ContainerAdapter } from "../src/container-adapter";
-import { jest } from "@jest/globals";
 
 describe("ContainerAdapter", () => {
 	let containerMock;
