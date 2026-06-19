@@ -10,6 +10,8 @@ const {
 
 	WS_GATEWAY_HOST_PROCESSOR = "localhost",
 	WS_GATEWAY_PORT_PROCESSOR = "7160",
+
+	DB_URL = "./database/tracking-notification.db",
 } = process.env;
 
 export const environments = {
@@ -21,4 +23,5 @@ export const environments = {
 	WHATSAPP_BROWSER_VERIFY_LIFE_MINUTES: Number(WHATSAPP_BROWSER_VERIFY_LIFE_MINUTES),
 	WS_GATEWAY_HOST_PROCESSOR,
 	WS_GATEWAY_PORT_PROCESSOR: Number(WS_GATEWAY_PORT_PROCESSOR),
+	DB_URL,
 };
