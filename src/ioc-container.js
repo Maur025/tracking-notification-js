@@ -24,6 +24,7 @@ import { SmsController } from "./sms/sms.controller.js";
 import { SocketClient } from "./socket/socket-client.js";
 import { EmailProvider } from "./email/email-provider.js";
 import { EmailNotifier } from "./email/email-notifier.js";
+import { DatabaseProvider } from "./db/database-provider.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -83,6 +84,7 @@ iocContainer.register({
 	}).singleton(),
 
 	// providers
+	databaseProvider: asClass(DatabaseProvider),
 	emailProvider: asClass(EmailProvider).singleton(),
 
 	// notifiers

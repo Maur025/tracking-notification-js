@@ -155,3 +155,6 @@ dist
 tmp/
 
 src/email/mock-connection-email-data.js
+
+# sql lite database
+*.db
