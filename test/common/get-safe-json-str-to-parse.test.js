@@ -1,3 +1,4 @@
+import { describe, test, expect } from "@jest/globals";
 import { getSafeJsonStrToParse } from "../../src/common/get-safe-json-str-to-parse";
 
 describe("getSafeJsonStrToParse", () => {

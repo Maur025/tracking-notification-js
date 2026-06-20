@@ -1,4 +1,5 @@
 import { drizzle } from "drizzle-orm/libsql";
+import { migrate } from "drizzle-orm/libsql/migrator";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 
@@ -12,7 +13,7 @@ export class DatabaseProvider {
 		this.#environment = environments;
 	}
 
-	initialize() {
+	async initialize() {
 		const absoluteDbPath = path.resolve(process.cwd(), this.#environment.DB_URL);
 		const directory = path.dirname(absoluteDbPath);
 
@@ -29,6 +30,10 @@ export class DatabaseProvider {
 		});
 
 		this.#containerAdapter.registerValue("dbClient", this.#dbClient);
+
+		await migrate(this.#dbClient, {
+			migrationsFolder: path.resolve(process.cwd(), "./drizzle"),
+		});
 	}
 
 	getDbClient() {

@@ -1,4 +1,4 @@
-import { jest } from "@jest/globals";
+import { jest, describe, beforeEach, test, expect } from "@jest/globals";
 import { EmailController } from "../../src/email/email.controller";
 
 describe("EmailController", () => {
