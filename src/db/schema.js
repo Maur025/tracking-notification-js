@@ -1,5 +1,3 @@
-import * as channelSchema from "../channel/channel.schema.js";
-
-export const schema = {
-	...channelSchema,
-};
+export * from "../company/company.schema.js";
+export * from "../channel/channel-type.schema.js";
+export * from "../channel/channel.schema.js";

@@ -15,7 +15,7 @@ async function bootstrap() {
 	const socketServer = iocContainer.resolve("socketServer");
 
 	try {
-		databaseProvider.initialize();
+		await databaseProvider.initialize();
 		socketClient.initialize();
 		socketClient.clientStart();
 		redisApp.initialize();
