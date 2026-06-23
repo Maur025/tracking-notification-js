@@ -25,6 +25,9 @@ async function bootstrap() {
 		serverApp.initialize();
 		socketServer.initialize(serverApp.getHttpServer());
 
+		const dbSeed = iocContainer.resolve("dbSeed");
+		await dbSeed.runSeeders();
+
 		await serverApp.listen();
 	} catch (error) {
 		console.error("Error starting the application:", error);

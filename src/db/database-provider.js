@@ -17,8 +17,6 @@ export class DatabaseProvider {
 		const absoluteDbPath = path.resolve(process.cwd(), this.#environment.DB_URL);
 		const directory = path.dirname(absoluteDbPath);
 
-		console.log({ absoluteDbPath, directory });
-
 		if (!existsSync(directory)) {
 			mkdirSync(directory, { recursive: true });
 		}

@@ -5,6 +5,7 @@ import ioredis from "ioredis";
 import bullmq from "bullmq";
 import nodemailer from "nodemailer";
 import playwright from "playwright";
+import * as drizzleOrm from "drizzle-orm";
 import { ServerApp } from "./server/server-app.js";
 import { WhatsappController } from "./whatsapp/whatsapp.controller.js";
 import { EmailController } from "./email/email.controller.js";
@@ -25,6 +26,10 @@ import { SocketClient } from "./socket/socket-client.js";
 import { EmailProvider } from "./email/email-provider.js";
 import { EmailNotifier } from "./email/email-notifier.js";
 import { DatabaseProvider } from "./db/database-provider.js";
+import { CompanyService } from "./company/company.service.js";
+import { DbSeed } from "./db/db-seed.js";
+import { ChannelTypeService } from "./channel/channel-type.service.js";
+import { ChannelService } from "./channel/channel.service.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -42,6 +47,7 @@ iocContainer.register({
 	bullmq: asValue(bullmq),
 	nodemailer: asValue(nodemailer),
 	playwright: asValue(playwright),
+	drizzleOrm: asValue(drizzleOrm),
 
 	//Container
 	container: asValue(iocContainer),
@@ -84,11 +90,19 @@ iocContainer.register({
 	}).singleton(),
 
 	// providers
-	databaseProvider: asClass(DatabaseProvider),
+	databaseProvider: asClass(DatabaseProvider).singleton(),
 	emailProvider: asClass(EmailProvider).singleton(),
 
 	// notifiers
 	emailNotifier: asClass(EmailNotifier).singleton(),
+
+	// db services
+	channelTypeService: asClass(ChannelTypeService).singleton(),
+	companyService: asClass(CompanyService).singleton(),
+	channelService: asClass(ChannelService).singleton(),
+
+	// db seeders
+	dbSeed: asClass(DbSeed).singleton(),
 });
 
 export { iocContainer };

@@ -1,4 +1,4 @@
-import { sqliteTable, text } from "drizzle-orm/sqlite-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { baseSchema } from "../db/base.schema.js";
 import { channelTypesTable } from "./channel-type.schema.js";
 import { relations } from "drizzle-orm";
@@ -18,6 +18,7 @@ export const channelsTable = sqliteTable("channels", {
 	port: text("port"),
 	username: text("username"),
 	password: text("password"),
+	secure: integer("secure", { mode: "boolean" }).default(false),
 });
 
 export const channelsRelations = relations(channelsTable, ({ one }) => ({
