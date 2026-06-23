@@ -1,0 +1,1 @@
+ALTER TABLE `channels` ADD `secure` integer DEFAULT false;
