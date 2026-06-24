@@ -12,7 +12,7 @@ describe("EmailNotifier", () => {
 	let mockEmailProvider;
 	let mockEmailProviderGetEmailChannel;
 
-	let mockEmailChannelSendMail;
+	let mockEmailChannelSend;
 	let mockEmailChannelGetUsername;
 
 	let mockChannelService;
@@ -23,11 +23,11 @@ describe("EmailNotifier", () => {
 		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
 		consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
 
-		mockEmailChannelSendMail = jest.fn();
+		mockEmailChannelSend = jest.fn();
 		mockEmailChannelGetUsername = jest.fn().mockReturnValue(username);
 
 		mockEmailProviderGetEmailChannel = jest.fn().mockImplementation(() => ({
-			sendMail: mockEmailChannelSendMail,
+			send: mockEmailChannelSend,
 			getUsername: mockEmailChannelGetUsername,
 		}));
 
@@ -85,7 +85,7 @@ describe("EmailNotifier", () => {
 				},
 			}),
 		);
-		expect(mockEmailChannelSendMail).toHaveBeenCalledWith(
+		expect(mockEmailChannelSend).toHaveBeenCalledWith(
 			expect.objectContaining({
 				from: username,
 				to: notifierPayload.toList,
@@ -109,7 +109,7 @@ describe("EmailNotifier", () => {
 
 		mockChannelFindOneByFilters.mockResolvedValue({});
 
-		mockEmailChannelSendMail.mockImplementation(() => {
+		mockEmailChannelSend.mockImplementation(() => {
 			throw new Error("Failed to send email");
 		});
 
@@ -140,7 +140,7 @@ describe("EmailNotifier", () => {
 			),
 		);
 		expect(mockEmailProviderGetEmailChannel).not.toHaveBeenCalled();
-		expect(mockEmailChannelSendMail).not.toHaveBeenCalled();
+		expect(mockEmailChannelSend).not.toHaveBeenCalled();
 		expect(consoleErrorSpy).not.toHaveBeenCalled();
 	});
 });

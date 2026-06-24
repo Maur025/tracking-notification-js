@@ -85,7 +85,7 @@ describe("EmailChannel", () => {
 	});
 
 	test("should return email client instance", () => {
-		const client = emailChannel.getEmailClient();
+		const client = emailChannel.getClient();
 
 		expect(client).toBeDefined();
 	});
@@ -105,7 +105,7 @@ describe("EmailChannel", () => {
 			text: "This is a test email.",
 		};
 
-		emailChannel.sendMail(mailOptions);
+		emailChannel.send(mailOptions);
 
 		expect(mockTransportSendMail).toHaveBeenCalledWith(mailOptions);
 	});
