@@ -15,7 +15,7 @@ export const channelsTable = sqliteTable("channels", {
 		.references(() => companiesTable.id),
 	referenceId: text("reference_id").notNull(),
 	host: text("host"),
-	port: text("port"),
+	port: integer("port"),
 	username: text("username"),
 	password: text("password"),
 	secure: integer("secure", { mode: "boolean" }).default(false),

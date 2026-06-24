@@ -1,33 +1,36 @@
 import { Notifier } from "../common/notifier.js";
-import { mockConnectionEmailData } from "./mock-connection-email-data.js";
 
 export class EmailNotifier extends Notifier {
 	#emailProvider;
+	#channelService;
 
-	constructor({ emailProvider }) {
+	constructor({ emailProvider, channelService }) {
 		super();
 		this.#emailProvider = emailProvider;
+		this.#channelService = channelService;
 	}
 
-	async send({ toList, subject, html, text, notificationType = "ALL", emailChannelIds = [] }) {
-		// buscar configuración en la db, todas las disponibles, según el id en caso de que type sea igual a ALL todos los de la empresa, si selecciona SOME, debe enviar el valor emailChannelIds
-
-		console.log({
-			notificationType,
-			emailChannelIds,
+	async send({ toList, subject, html, text, channelId, companyId }) {
+		const emailChannelData = await this.#channelService.findOneByFilters({
+			companyReferenceId: companyId,
+			channelType: "email",
+			channelReferenceId: channelId,
 		});
 
-		const testDataMock = mockConnectionEmailData;
-		// Entre varios resultado se debe notificar con cada objeto obtenido, en caso de que quieran que se balancee la carga entre clientes de email, la lógica cambiara
+		if (!emailChannelData) {
+			console.warn("[EMAIL-NOTIFICATION] Email channel not found ... skipping notification");
+			return;
+		}
+
 		const emailChannel = await this.#emailProvider.getEmailChannel({
 			connectionData: {
-				host: testDataMock.server,
-				port: testDataMock.port,
-				secure: testDataMock.ssl,
+				host: emailChannelData.host,
+				port: emailChannelData.port,
+				secure: emailChannelData.secure,
 			},
 			credentials: {
-				username: testDataMock.username,
-				password: testDataMock.password,
+				username: emailChannelData.username,
+				password: emailChannelData.password,
 			},
 		});
 

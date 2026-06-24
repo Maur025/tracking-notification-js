@@ -30,6 +30,9 @@ import { CompanyService } from "./company/company.service.js";
 import { DbSeed } from "./db/db-seed.js";
 import { ChannelTypeService } from "./channel/channel-type.service.js";
 import { ChannelService } from "./channel/channel.service.js";
+import { EmailService } from "./email/email.service.js";
+import { ErrorHandler } from "./server/error-handler.js";
+import { SocketServerHandler } from "./socket/socket-server-handler.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -56,7 +59,9 @@ iocContainer.register({
 	// Configurations
 	environments: asValue(environments),
 	serverApp: asClass(ServerApp).singleton(),
+	errorHandler: asClass(ErrorHandler).singleton(),
 	redisApp: asClass(RedisApp).singleton(),
+	socketServerHandler: asClass(SocketServerHandler).singleton(),
 
 	// bullmq workers
 	emailWorker: asClass(EmailWorker).singleton(),
@@ -103,6 +108,9 @@ iocContainer.register({
 
 	// db seeders
 	dbSeed: asClass(DbSeed).singleton(),
+
+	// controller services
+	emailService: asClass(EmailService).singleton(),
 });
 
 export { iocContainer };

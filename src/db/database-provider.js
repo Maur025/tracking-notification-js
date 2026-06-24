@@ -2,6 +2,7 @@ import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
+import * as schema from "./schema.js";
 
 export class DatabaseProvider {
 	#containerAdapter;
@@ -25,6 +26,7 @@ export class DatabaseProvider {
 			connection: {
 				url: `file:${this.#environment.DB_URL}`,
 			},
+			schema,
 		});
 
 		this.#containerAdapter.registerValue("dbClient", this.#dbClient);

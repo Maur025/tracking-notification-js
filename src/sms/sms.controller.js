@@ -1,4 +1,6 @@
+import { serverResponse } from "../server/server-response.js";
 import { workerJobNames } from "../worker-job-name.js";
+import { StatusCodes } from "http-status-codes";
 
 export class SmsController {
 	#resource = "sms";
@@ -14,24 +16,27 @@ export class SmsController {
 	}
 
 	async #handlePostQueue(req, res) {
-		try {
-			const newJobResponse = await this.#smsQueue.addToQueue(
-				workerJobNames.SMS_SEND_NOTIFICATION,
-				req.body,
-			);
+		const newJobResponse = await this.#smsQueue.addToQueue(
+			workerJobNames.SMS_SEND_NOTIFICATION,
+			req.body,
+		);
 
-			return res.status(200).json({ code: 200, data: newJobResponse });
-		} catch (error) {
-			return res.status(500).json({
-				code: 500,
-				message: "Failed to add job to sms queue",
-				error: error.message,
-			});
-		}
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				data: newJobResponse,
+				message: "SMS job has been queued successfully.",
+			}),
+		);
 	}
 
 	#handleGetQueue(req, res) {
 		console.log({ req });
-		return res.status(200).json({ code: 200, message: "GET /sms/queue endpoint is working!" });
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				message: "GET /sms/queue endpoint is working!",
+			}),
+		);
 	}
 }
