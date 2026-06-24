@@ -27,7 +27,6 @@ describe("EmailWorkerService", () => {
 			message: "Test message",
 			subject: "Test subject",
 			toList: ["test@example.com"],
-			notificationType: "SOME",
 		};
 
 		await emailWorkerService.sendNotification({ jobData });

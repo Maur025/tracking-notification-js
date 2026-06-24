@@ -1,4 +1,6 @@
+import { serverResponse } from "../server/server-response.js";
 import { workerJobNames } from "../worker-job-name.js";
+import { StatusCodes } from "http-status-codes";
 
 export class WhatsappController {
 	#resource = "whatsapp";
@@ -14,26 +16,27 @@ export class WhatsappController {
 	}
 
 	async #handlePostQueue(req, res) {
-		try {
-			const newJobResponse = await this.#whatsappQueue.addToQueue(
-				workerJobNames.WHATSAPP_SEND_NOTIFICATION,
-				req.body,
-			);
+		const newJobResponse = await this.#whatsappQueue.addToQueue(
+			workerJobNames.WHATSAPP_SEND_NOTIFICATION,
+			req.body,
+		);
 
-			return res.status(200).json({ code: 200, data: newJobResponse });
-		} catch (error) {
-			return res.status(500).json({
-				code: 500,
-				message: "Failed to add job to whatsapp queue",
-				error: error.message,
-			});
-		}
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				data: newJobResponse,
+				message: "Whatsapp job has been queued successfully.",
+			}),
+		);
 	}
 
 	#handleGetQueue(req, res) {
 		console.log({ req });
-		return res
-			.status(200)
-			.json({ code: 200, message: "GET /whatsapp/queue endpoint is working!" });
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				message: "GET /whatsapp/queue endpoint is working!",
+			}),
+		);
 	}
 }

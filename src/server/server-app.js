@@ -1,6 +1,7 @@
 import compression from "compression";
 import cors from "cors";
 import { createServer } from "http";
+import { ReasonPhrases, StatusCodes } from "http-status-codes";
 
 export class ServerApp {
 	#express;
@@ -8,11 +9,13 @@ export class ServerApp {
 	#httpServer;
 	#env;
 	#controllers;
+	#errorHandler;
 
-	constructor({ environments, controllers, express }) {
+	constructor({ environments, controllers, express, errorHandler }) {
 		this.#env = environments;
 		this.#controllers = controllers;
 		this.#express = express;
+		this.#errorHandler = errorHandler;
 		this.#expressApp = this.#express();
 	}
 
@@ -41,6 +44,18 @@ export class ServerApp {
 				controller.registerRoutes(this.#expressApp);
 			}
 		});
+
+		// eslint-disable-next-line no-unused-vars
+		this.#expressApp.use((req, res, next) => {
+			res.status(StatusCodes.NOT_FOUND).json({
+				code: StatusCodes.NOT_FOUND,
+				message: ReasonPhrases.NOT_FOUND,
+			});
+		});
+
+		this.#expressApp.use((err, req, res, next) =>
+			this.#errorHandler.handler(err, req, res, next),
+		);
 
 		this.#httpServer = createServer(this.#expressApp);
 	}

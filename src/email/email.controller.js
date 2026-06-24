@@ -1,11 +1,13 @@
-import { workerJobNames } from "../worker-job-name.js";
+import { serverResponse } from "../server/server-response.js";
+import { EmailAddQueueRequest } from "./request/email-add-queue-request.js";
+import { StatusCodes } from "http-status-codes";
 
 export class EmailController {
 	#resource = "emails";
-	#emailQueue;
+	#emailService;
 
-	constructor({ emailQueue }) {
-		this.#emailQueue = emailQueue;
+	constructor({ emailService }) {
+		this.#emailService = emailService;
 	}
 
 	registerRoutes(app) {
@@ -14,26 +16,28 @@ export class EmailController {
 	}
 
 	async #handlePostQueue(req, res) {
-		try {
-			const newJobResponse = await this.#emailQueue.addToQueue(
-				workerJobNames.EMAIL_SEND_NOTIFICATION,
-				req.body,
-			);
+		const data = EmailAddQueueRequest.parse(req.body);
 
-			return res.status(200).json({ code: 200, data: newJobResponse });
-		} catch (error) {
-			return res.status(500).json({
-				code: 500,
-				message: "Failed to add job to email queue",
-				error: error.message,
-			});
-		}
+		const jobResponses = await this.#emailService.assignAndDistributeJobs({
+			requestData: data,
+		});
+
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				data: jobResponses,
+				message: "Emails have been queued successfully.",
+			}),
+		);
 	}
 
 	#handleGetQueue(req, res) {
 		console.log({ req });
-		return res
-			.status(200)
-			.json({ code: 200, message: "GET /emails/queue endpoint is working!" });
+		return res.status(StatusCodes.OK).json(
+			serverResponse({
+				code: StatusCodes.OK,
+				message: "GET /emails/queue endpoint is working!",
+			}),
+		);
 	}
 }

@@ -6,19 +6,23 @@ async function bootstrap() {
 	overrideLog();
 
 	const databaseProvider = iocContainer.resolve("databaseProvider");
-	const socketClient = iocContainer.resolve("socketClient");
 	const redisApp = iocContainer.resolve("redisApp");
-	const emailWorker = iocContainer.resolve("emailWorker");
-	const whatsappWorker = iocContainer.resolve("whatsappWorker");
-	const smsWorker = iocContainer.resolve("smsWorker");
-	const serverApp = iocContainer.resolve("serverApp");
-	const socketServer = iocContainer.resolve("socketServer");
 
 	try {
 		await databaseProvider.initialize();
+		redisApp.initialize();
+
+		const emailWorker = iocContainer.resolve("emailWorker");
+		const whatsappWorker = iocContainer.resolve("whatsappWorker");
+		const smsWorker = iocContainer.resolve("smsWorker");
+
+		const socketClient = iocContainer.resolve("socketClient");
+		const serverApp = iocContainer.resolve("serverApp");
+		const socketServer = iocContainer.resolve("socketServer");
+
 		socketClient.initialize();
 		socketClient.clientStart();
-		redisApp.initialize();
+
 		emailWorker.initialize(redisApp.getRedisConnection());
 		whatsappWorker.initialize(redisApp.getRedisConnection());
 		smsWorker.initialize(redisApp.getRedisConnection());

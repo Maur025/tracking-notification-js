@@ -6,7 +6,7 @@ export class EmailWorkerService {
 	}
 
 	async sendNotification({ jobData }) {
-		if (!jobData.message || !jobData.subject || !jobData.toList || !jobData.notificationType) {
+		if (!jobData.message || !jobData.subject || !jobData.toList) {
 			console.error("Invalid email notification data");
 			return;
 		}
