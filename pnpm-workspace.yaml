@@ -1,7 +1,9 @@
 allowBuilds:
+  baileys: false
   better-sqlite3: false
   es5-ext: false
   esbuild: false
   msgpackr-extract: false
+  protobufjs: false
   sqlite3: false
   unrs-resolver: false

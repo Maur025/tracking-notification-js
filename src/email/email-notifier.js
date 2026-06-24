@@ -35,7 +35,7 @@ export class EmailNotifier extends Notifier {
 		});
 
 		try {
-			emailChannel.sendMail({
+			emailChannel.send({
 				from: emailChannel.getUsername(),
 				to: toList,
 				subject: subject,

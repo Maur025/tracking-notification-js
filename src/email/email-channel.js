@@ -39,7 +39,7 @@ export class EmailChannel {
 		return `${this.#host}|${this.#port}|${this.#username}`;
 	}
 
-	getEmailClient() {
+	getClient() {
 		return this.#emailClient;
 	}
 
@@ -47,7 +47,7 @@ export class EmailChannel {
 		return this.#username;
 	}
 
-	sendMail(mailOptions) {
+	send(mailOptions) {
 		this.#emailClient.sendMail(mailOptions);
 	}
 
