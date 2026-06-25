@@ -1,4 +1,4 @@
-import { jest, beforeEach, afterEach, describe, test, expect } from "@jest/globals";
+import { vi, beforeEach, afterEach, describe, test, expect } from "vitest";
 import { CompanyService } from "../../src/company/company.service.js";
 
 describe("CompanyService", () => {
@@ -17,7 +17,7 @@ describe("CompanyService", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should extend BaseDbService and inherit its methods", () => {

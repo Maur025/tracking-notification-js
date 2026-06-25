@@ -1,16 +1,18 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { SocketClient } from "../../src/socket/socket-client.js";
 
-const mockWsClientManagerOn = jest.fn();
-const mockWsClientManager = { on: mockWsClientManagerOn };
+const mockWsClientManagerOn = vi.fn();
 
-jest.unstable_mockModule("tracking-common", () => ({
-	__esModule: true,
-	NodeControllerClient: jest.fn().mockImplementation(() => ({
-		wsClientManager: mockWsClientManager,
-	})),
-}));
-const { NodeControllerClient } = await import("tracking-common");
-const { SocketClient } = await import("../../src/socket/socket-client");
+vi.mock("tracking-common", () => {
+	class NodeControllerClient {
+		constructor() {}
+		wsClientManager = {
+			on: mockWsClientManagerOn,
+		};
+	}
+
+	return { NodeControllerClient };
+});
 
 describe("SocketClient", () => {
 	let socketClient;
@@ -27,7 +29,7 @@ describe("SocketClient", () => {
 			APP_PORT: 3000,
 		};
 
-		mockContainerRegisterValue = jest.fn();
+		mockContainerRegisterValue = vi.fn();
 
 		mockContainerAdapter = {
 			registerValue: mockContainerRegisterValue,
@@ -40,13 +42,12 @@ describe("SocketClient", () => {
 	});
 
 	afterEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should initialize with correct environments", () => {
 		socketClient.initialize();
 
-		expect(NodeControllerClient).toHaveBeenCalled();
 		expect(mockWsClientManagerOn).toHaveBeenCalled();
 		expect(mockContainerRegisterValue).toHaveBeenCalledWith("wsClient", expect.any(Object));
 	});

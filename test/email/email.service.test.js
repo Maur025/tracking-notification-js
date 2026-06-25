@@ -1,4 +1,4 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
 import { EmailService } from "../../src/email/email.service.js";
 
 describe("EmailService", () => {
@@ -8,7 +8,7 @@ describe("EmailService", () => {
 	let mockEmailAddToQueue;
 
 	beforeEach(() => {
-		mockEmailAddToQueue = jest.fn();
+		mockEmailAddToQueue = vi.fn();
 		mockEmailQueue = {
 			addToQueue: mockEmailAddToQueue,
 		};
@@ -17,7 +17,7 @@ describe("EmailService", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should distribute emails in 2 batches with same channel id", async () => {

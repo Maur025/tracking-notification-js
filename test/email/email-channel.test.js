@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { EmailChannel } from "../../src/email/email-channel";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { EmailChannel } from "../../src/email/email-channel.js";
 
 describe("EmailChannel", () => {
 	let emailChannel;
@@ -25,14 +25,14 @@ describe("EmailChannel", () => {
 	};
 
 	beforeEach(() => {
-		consoleInfoSpy = jest.spyOn(console, "info").mockImplementation(() => {});
-		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+		consoleInfoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-		mockTransportVerify = jest.fn();
-		mockTransportSendMail = jest.fn();
-		mockTransportClose = jest.fn();
+		mockTransportVerify = vi.fn();
+		mockTransportSendMail = vi.fn();
+		mockTransportClose = vi.fn();
 
-		mockNodemailerCreateTransport = jest.fn().mockReturnValue({
+		mockNodemailerCreateTransport = vi.fn().mockReturnValue({
 			verify: mockTransportVerify,
 			sendMail: mockTransportSendMail,
 			close: mockTransportClose,
@@ -48,7 +48,7 @@ describe("EmailChannel", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should initialize email client successfully", async () => {

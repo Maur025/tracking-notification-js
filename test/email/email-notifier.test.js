@@ -1,4 +1,4 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
 import { EmailNotifier } from "../../src/email/email-notifier.js";
 
 describe("EmailNotifier", () => {
@@ -19,21 +19,21 @@ describe("EmailNotifier", () => {
 	let mockChannelFindOneByFilters;
 
 	beforeEach(() => {
-		jest.spyOn(console, "log").mockImplementation(() => {});
-		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-		consoleWarnSpy = jest.spyOn(console, "warn").mockImplementation(() => {});
+		vi.spyOn(console, "log").mockImplementation(() => {});
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		consoleWarnSpy = vi.spyOn(console, "warn").mockImplementation(() => {});
 
-		mockEmailChannelSend = jest.fn();
-		mockEmailChannelGetUsername = jest.fn().mockReturnValue(username);
+		mockEmailChannelSend = vi.fn();
+		mockEmailChannelGetUsername = vi.fn().mockReturnValue(username);
 
-		mockEmailProviderGetEmailChannel = jest.fn().mockImplementation(() => ({
+		mockEmailProviderGetEmailChannel = vi.fn().mockImplementation(() => ({
 			send: mockEmailChannelSend,
 			getUsername: mockEmailChannelGetUsername,
 		}));
 
 		mockEmailProvider = { getEmailChannel: mockEmailProviderGetEmailChannel };
 
-		mockChannelFindOneByFilters = jest.fn();
+		mockChannelFindOneByFilters = vi.fn();
 
 		mockChannelService = {
 			findOneByFilters: mockChannelFindOneByFilters,
@@ -46,7 +46,7 @@ describe("EmailNotifier", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should send an email notification", async () => {

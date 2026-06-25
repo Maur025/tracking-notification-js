@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, test, expect } from "@jest/globals";
-import { SmsController } from "../../src/sms/sms.controller";
+import { vi, describe, beforeEach, test, expect } from "vitest";
+import { SmsController } from "../../src/sms/sms.controller.js";
 
 describe("SmsController", () => {
 	let smsQueueMock;
@@ -12,8 +12,8 @@ describe("SmsController", () => {
 	beforeEach(() => {
 		smsQueueMock = {};
 
-		appPostMock = jest.fn();
-		appGetMock = jest.fn();
+		appPostMock = vi.fn();
+		appGetMock = vi.fn();
 
 		app = {
 			get: appGetMock,

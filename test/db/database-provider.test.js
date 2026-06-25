@@ -1,18 +1,14 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { drizzle } from "drizzle-orm/libsql";
+import { migrate } from "drizzle-orm/libsql/migrator";
+import { DatabaseProvider } from "../../src/db/database-provider.js";
 
-jest.unstable_mockModule("drizzle-orm/libsql", () => ({
-	__esModule: true,
-	drizzle: jest.fn(),
+vi.mock("drizzle-orm/libsql", () => ({
+	drizzle: vi.fn(),
 }));
-jest.unstable_mockModule("drizzle-orm/libsql/migrator", () => ({
-	__esModule: true,
-	migrate: jest.fn(),
+vi.mock("drizzle-orm/libsql/migrator", () => ({
+	migrate: vi.fn(),
 }));
-
-const { drizzle } = await import("drizzle-orm/libsql");
-const { migrate } = await import("drizzle-orm/libsql/migrator");
-
-const { DatabaseProvider } = await import("../../src/db/database-provider.js");
 
 describe("DatabaseProvider", () => {
 	let databaseProvider;
@@ -25,7 +21,7 @@ describe("DatabaseProvider", () => {
 	};
 
 	beforeEach(() => {
-		mockContainerRegisterValue = jest.fn();
+		mockContainerRegisterValue = vi.fn();
 
 		mockContainerAdapter = {
 			registerValue: mockContainerRegisterValue,
@@ -38,7 +34,7 @@ describe("DatabaseProvider", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should initialize db instance", async () => {

@@ -1,4 +1,4 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
 import { SocketServerHandler } from "../../src/socket/socket-server-handler.js";
 
 describe("SocketServerHandler", () => {
@@ -10,16 +10,16 @@ describe("SocketServerHandler", () => {
 	let mockEmailAssignAndDistributeJobs;
 
 	beforeEach(() => {
-		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-		mockEmailAssignAndDistributeJobs = jest.fn();
+		mockEmailAssignAndDistributeJobs = vi.fn();
 		mockEmailService = { assignAndDistributeJobs: mockEmailAssignAndDistributeJobs };
 
 		socketServerHandler = new SocketServerHandler({ emailService: mockEmailService });
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should add to email queue by socket", async () => {

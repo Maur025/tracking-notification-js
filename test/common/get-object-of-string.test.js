@@ -1,11 +1,11 @@
-import { jest, describe, beforeEach, test, expect } from "@jest/globals";
-import { getObjectOfString } from "../../src/common/get-object-of-string";
+import { vi, describe, beforeEach, test, expect } from "vitest";
+import { getObjectOfString } from "../../src/common/get-object-of-string.js";
 
 describe("getObjectOfString", () => {
 	let consoleErrorSpy;
 
 	beforeEach(() => {
-		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 	});
 
 	test("should return an object when given a valid JSON string", () => {

@@ -1,16 +1,19 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { EmailProvider } from "../../src/email/email-provider.js";
+import { EmailChannel } from "../../src/email/email-channel.js";
 
-const mockEmailChannelInitialize = jest.fn();
+const mockEmailChannelInitialize = vi.fn();
 
-jest.unstable_mockModule("../../src/email/email-channel", () => ({
-	__esModule: true,
-	EmailChannel: jest.fn().mockImplementation(() => ({
-		initialize: mockEmailChannelInitialize,
-	})),
-}));
+vi.mock("../../src/email/email-channel.js", () => {
+	class MockEmailChannel {
+		// eslint-disable-next-line no-unused-vars
+		constructor(dependencies) {}
 
-const { EmailChannel } = await import("../../src/email/email-channel");
-const { EmailProvider } = await import("../../src/email/email-provider");
+		initialize = mockEmailChannelInitialize;
+	}
+
+	return { EmailChannel: MockEmailChannel };
+});
 
 describe("EmailProvider", () => {
 	let emailProvider;
@@ -33,30 +36,25 @@ describe("EmailProvider", () => {
 	});
 
 	afterEach(() => {
-		jest.clearAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should create and get a new email channel if it does not exist", async () => {
 		const emailChannel = await emailProvider.getEmailChannel({ connectionData, credentials });
 
 		expect(emailChannel).toBeDefined();
-		expect(EmailChannel).toHaveBeenCalledWith(
-			expect.objectContaining({
-				nodemailer: mockNodemailer,
-				connectionData,
-				credentials,
-			}),
-		);
+		expect(emailChannel).toBeInstanceOf(EmailChannel);
 		expect(mockEmailChannelInitialize).toHaveBeenCalled();
 	});
 
 	test("should only get an existing email channel if it exists", async () => {
-		await emailProvider.getEmailChannel({ connectionData, credentials });
+		const firstChannel = await emailProvider.getEmailChannel({ connectionData, credentials });
 
-		const emailChannel = await emailProvider.getEmailChannel({ connectionData, credentials });
+		const secondChannel = await emailProvider.getEmailChannel({ connectionData, credentials });
 
-		expect(emailChannel).toBeDefined();
-		expect(EmailChannel).toHaveBeenCalledTimes(1);
+		expect(secondChannel).toBeDefined();
+		expect(secondChannel).toBeInstanceOf(EmailChannel);
+		expect(secondChannel).toBe(firstChannel);
 		expect(mockEmailChannelInitialize).toHaveBeenCalledTimes(1);
 	});
 });

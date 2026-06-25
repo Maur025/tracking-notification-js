@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { ServerApp } from "../../src/server/server-app";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { ServerApp } from "../../src/server/server-app.js";
 
 describe("ServerApp", () => {
 	let environments;
@@ -14,25 +14,25 @@ describe("ServerApp", () => {
 		environments = { APP_STATIC_PUBLIC_PATH: "/public", APP_PORT: 3000 };
 		controllers = [
 			{
-				registerRoutes: jest.fn(),
+				registerRoutes: vi.fn(),
 			},
 		];
 
-		mockAppUse = jest.fn();
+		mockAppUse = vi.fn();
 
-		express = jest.fn(() => ({
+		express = vi.fn(() => ({
 			use: mockAppUse,
 		}));
-		express.json = jest.fn();
-		express.text = jest.fn();
-		express.urlencoded = jest.fn();
-		express.static = jest.fn();
+		express.json = vi.fn();
+		express.text = vi.fn();
+		express.urlencoded = vi.fn();
+		express.static = vi.fn();
 
 		serverApp = new ServerApp({ environments, controllers, express });
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should initialize server app", () => {
@@ -61,7 +61,7 @@ describe("ServerApp", () => {
 		serverApp.initialize();
 		const httpServer = serverApp.getHttpServer();
 
-		const httpServerListenSpy = jest.spyOn(httpServer, "listen").mockImplementation(() => {});
+		const httpServerListenSpy = vi.spyOn(httpServer, "listen").mockImplementation(() => {});
 
 		await serverApp.listen();
 

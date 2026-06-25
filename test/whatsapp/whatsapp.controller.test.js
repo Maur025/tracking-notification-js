@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, test, expect } from "@jest/globals";
-import { WhatsappController } from "../../src/whatsapp/whatsapp.controller";
+import { vi, describe, beforeEach, test, expect } from "vitest";
+import { WhatsappController } from "../../src/whatsapp/whatsapp.controller.js";
 
 describe("WhatsappController", () => {
 	let app;
@@ -10,8 +10,8 @@ describe("WhatsappController", () => {
 	const mockWhatsappQueue = {};
 
 	beforeEach(() => {
-		appPostMock = jest.fn();
-		appGetMock = jest.fn();
+		appPostMock = vi.fn();
+		appGetMock = vi.fn();
 
 		app = {
 			post: appPostMock,

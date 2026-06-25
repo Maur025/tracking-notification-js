@@ -1,5 +1,5 @@
-import { describe, test, expect } from "@jest/globals";
-import { getProtocolData } from "../../src/common/get-protocol-data";
+import { describe, test, expect } from "vitest";
+import { getProtocolData } from "../../src/common/get-protocol-data.js";
 
 describe("getProtocolData", () => {
 	test("should return an object with id, name, and script properties", () => {

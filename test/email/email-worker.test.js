@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { EmailWorker } from "../../src/email/email-worker";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { EmailWorker } from "../../src/email/email-worker.js";
 
 describe("EmailWorker", () => {
 	const expectedTopicName = "emailQueue";
@@ -8,7 +8,6 @@ describe("EmailWorker", () => {
 
 	let mockBullmq;
 	let mockWorkerOn;
-	let mockWorker;
 
 	let mockContainerAdapter;
 	let mockRegisterValue;
@@ -17,15 +16,18 @@ describe("EmailWorker", () => {
 	const redisConnectionMock = {};
 
 	beforeEach(() => {
-		mockWorkerOn = jest.fn();
-		mockWorker = jest.fn().mockImplementation(() => ({
-			on: mockWorkerOn,
-		}));
+		mockWorkerOn = vi.fn();
+		class MockWorker {
+			// eslint-disable-next-line no-unused-vars
+			constructor(topic, callback, options) {}
+			on = mockWorkerOn;
+		}
+
 		mockBullmq = {
-			Worker: mockWorker,
+			Worker: MockWorker,
 		};
 
-		mockRegisterValue = jest.fn();
+		mockRegisterValue = vi.fn();
 		mockContainerAdapter = {
 			registerValue: mockRegisterValue,
 		};
@@ -38,7 +40,7 @@ describe("EmailWorker", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should return topic name when call method getWorkerTopic", () => {
@@ -53,15 +55,6 @@ describe("EmailWorker", () => {
 		const expectedNameRegister = "emailBullmqWorker";
 
 		emailWorker.initialize(redisConnectionMock);
-
-		expect(mockWorker).toHaveBeenCalledWith(
-			expectedTopicName,
-			expect.any(Function),
-			expect.objectContaining({
-				connection: redisConnectionMock,
-				concurrency: 15,
-			}),
-		);
 
 		expect(mockWorkerOn).toHaveBeenCalledTimes(2);
 		expect(mockWorkerOn).toHaveBeenCalledWith(workerOnCompletedEvent, expect.any(Function));

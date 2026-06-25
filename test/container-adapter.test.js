@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, test, expect } from "@jest/globals";
-import { ContainerAdapter } from "../src/container-adapter";
+import { vi, describe, beforeEach, test, expect } from "vitest";
+import { ContainerAdapter } from "../src/container-adapter.js";
 
 describe("ContainerAdapter", () => {
 	let containerMock;
@@ -12,8 +12,8 @@ describe("ContainerAdapter", () => {
 	beforeEach(() => {
 		containerDependencies = { greeting: "Hello, World!" };
 
-		containerResolveMock = jest.fn();
-		containerRegisterMock = jest.fn();
+		containerResolveMock = vi.fn();
+		containerRegisterMock = vi.fn();
 
 		containerMock = {
 			resolve: containerResolveMock,

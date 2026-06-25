@@ -1,4 +1,4 @@
-import { describe, test, expect } from "@jest/globals";
+import { describe, test, expect } from "vitest";
 import { serverResponse } from "../../src/server/server-response.js";
 import { StatusCodes, ReasonPhrases } from "http-status-codes";
 

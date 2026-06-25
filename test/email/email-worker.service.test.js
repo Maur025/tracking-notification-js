@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { EmailWorkerService } from "../../src/email/email-worker.service";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { EmailWorkerService } from "../../src/email/email-worker.service.js";
 
 describe("EmailWorkerService", () => {
 	let emailWorkerService;
@@ -9,8 +9,8 @@ describe("EmailWorkerService", () => {
 	let mockEmailNotifierSend;
 
 	beforeEach(() => {
-		consoleErrorSpy = jest.spyOn(console, "error").mockImplementation(() => {});
-		mockEmailNotifierSend = jest.fn();
+		consoleErrorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
+		mockEmailNotifierSend = vi.fn();
 		mockEmailNotifier = {
 			send: mockEmailNotifierSend,
 		};
@@ -19,7 +19,7 @@ describe("EmailWorkerService", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should send email notification", async () => {

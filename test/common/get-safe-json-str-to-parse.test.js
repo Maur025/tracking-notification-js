@@ -1,5 +1,5 @@
-import { describe, test, expect } from "@jest/globals";
-import { getSafeJsonStrToParse } from "../../src/common/get-safe-json-str-to-parse";
+import { describe, test, expect } from "vitest";
+import { getSafeJsonStrToParse } from "../../src/common/get-safe-json-str-to-parse.js";
 
 describe("getSafeJsonStrToParse", () => {
 	test("should remove trailing commas before closing brackets and braces", () => {

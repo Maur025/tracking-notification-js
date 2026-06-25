@@ -1,18 +1,18 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { WhatsappWorkerService } from "../../src/whatsapp/whatsapp-worker.service";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { WhatsappWorkerService } from "../../src/whatsapp/whatsapp-worker.service.js";
 
 describe("WhatsappWorkerService", () => {
 	let whatsappWorkerService;
 	let consoleLogSpy;
 
 	beforeEach(() => {
-		consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+		consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
 		whatsappWorkerService = new WhatsappWorkerService();
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should send whatsapp notification", async () => {

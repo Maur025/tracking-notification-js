@@ -1,18 +1,18 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { SmsWorkerService } from "../../src/sms/sms-worker.service";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { SmsWorkerService } from "../../src/sms/sms-worker.service.js";
 
 describe("SmsWorkerService", () => {
 	let smsWorkerService;
 	let consoleLogSpy;
 
 	beforeEach(() => {
-		consoleLogSpy = jest.spyOn(console, "log").mockImplementation(() => {});
+		consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
 
 		smsWorkerService = new SmsWorkerService();
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should send sms notification", async () => {
