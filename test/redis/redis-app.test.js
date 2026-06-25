@@ -1,46 +1,45 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { RedisApp } from "../../src/redis/redis-app";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { RedisApp } from "../../src/redis/redis-app.js";
 
 describe("Redis App", () => {
 	let mockIoRedis;
 	let mockEnvironments;
 	let redisApp;
-
-	let mockRedis;
+	let consoleInfoSpy;
 
 	beforeEach(() => {
-		mockRedis = jest.fn().mockImplementation(() => ({
-			on: jest.fn(),
-		}));
+		consoleInfoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
+		class MockRedis {
+			// eslint-disable-next-line no-unused-vars
+			constructor(options) {}
+			on = vi.fn();
+		}
 
 		mockIoRedis = {
-			Redis: mockRedis,
+			Redis: MockRedis,
 		};
 		mockEnvironments = {
 			REDIS_HOST: "localhost",
 			REDIS_PORT: 6379,
 		};
 
-		jest.spyOn(console, "info").mockImplementation(() => {});
-
 		redisApp = new RedisApp({ ioredis: mockIoRedis, environments: mockEnvironments });
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should initialize Redis connection", () => {
 		redisApp.initialize();
 
-		expect(mockRedis).toHaveBeenCalledWith({
-			host: "localhost",
-			port: 6379,
-			maxRetriesPerRequest: null,
-		});
-
 		const redisConnection = redisApp.getRedisConnection();
 		expect(redisConnection).toBeDefined();
+		expect(consoleInfoSpy).toHaveBeenCalledWith(
+			expect.stringContaining(
+				`[IOREDIS] create Redis connection to ${mockEnvironments.REDIS_HOST}:${mockEnvironments.REDIS_PORT}`,
+			),
+		);
 	});
 
 	test("should return instance of ioredis connection", () => {

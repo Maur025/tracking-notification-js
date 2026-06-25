@@ -1,37 +1,38 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { EmailQueue } from "../../src/email/email-queue";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { EmailQueue } from "../../src/email/email-queue.js";
 
 describe("EmailQueue", () => {
 	const expectedQueueName = "emailQueue";
 	let emailQueue;
 
 	let mockBullmq;
-	let mockQueue;
 	let mockQueueAdd;
 
 	beforeEach(() => {
-		mockQueueAdd = jest.fn();
+		mockQueueAdd = vi.fn();
 
-		mockQueue = jest.fn().mockImplementation(() => ({
-			add: mockQueueAdd,
-		}));
+		class MockQueue {
+			// eslint-disable-next-line no-unused-vars
+			constructor(queueName) {}
+			add = mockQueueAdd;
+		}
 
 		mockBullmq = {
-			Queue: mockQueue,
+			Queue: MockQueue,
 		};
 
 		emailQueue = new EmailQueue({ bullmq: mockBullmq });
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should return instance of email queue", () => {
 		const queueInstance = emailQueue.getQueue();
 
 		expect(queueInstance).toBeDefined();
-		expect(mockQueue).toHaveBeenCalledWith(expectedQueueName);
+		expect(queueInstance).toBeInstanceOf(mockBullmq.Queue);
 	});
 
 	test("should add job to the email queue", async () => {

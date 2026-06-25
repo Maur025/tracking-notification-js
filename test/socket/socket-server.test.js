@@ -1,5 +1,5 @@
-import { jest, describe, beforeEach, test, expect } from "@jest/globals";
-import { SocketServer } from "../../src/socket/socket-server";
+import { vi, describe, beforeEach, test, expect } from "vitest";
+import { SocketServer } from "../../src/socket/socket-server.js";
 
 describe("SocketServer", () => {
 	let containerAdapter;
@@ -8,12 +8,12 @@ describe("SocketServer", () => {
 	let socketServer;
 
 	beforeEach(() => {
-		containerRegisterValueMock = jest.fn();
+		containerRegisterValueMock = vi.fn();
 		containerAdapter = {
 			registerValue: containerRegisterValueMock,
 		};
 
-		jest.spyOn(console, "info").mockImplementation(() => {});
+		vi.spyOn(console, "info").mockImplementation(() => {});
 
 		socketServer = new SocketServer({ containerAdapter });
 	});

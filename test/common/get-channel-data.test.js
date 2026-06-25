@@ -1,5 +1,5 @@
-import { describe, test, expect, beforeEach, afterEach } from "@jest/globals";
-import { getChannelData } from "../../src/common/get-channel-data";
+import { describe, test, expect, beforeEach, afterEach } from "vitest";
+import { getChannelData } from "../../src/common/get-channel-data.js";
 
 describe("getChannelData", () => {
 	const channelDataResponseJson = {

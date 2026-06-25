@@ -1,4 +1,4 @@
-import { jest, beforeEach, afterEach, describe, test, expect } from "@jest/globals";
+import { vi, beforeEach, afterEach, describe, test, expect } from "vitest";
 import { ChannelTypeService } from "../../src/channel/channel-type.service.js";
 
 describe("ChannelTypeService", () => {
@@ -17,7 +17,7 @@ describe("ChannelTypeService", () => {
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.resetAllMocks();
 	});
 
 	test("should extend BaseDbService and inherit its methods", () => {

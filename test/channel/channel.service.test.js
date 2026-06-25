@@ -1,10 +1,5 @@
-import { afterAll } from "@jest/globals";
-import { jest } from "@jest/globals";
-import { beforeEach } from "@jest/globals";
-import { describe } from "@jest/globals";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
 import { ChannelService } from "../../src/channel/channel.service.js";
-import { test } from "@jest/globals";
-import { expect } from "@jest/globals";
 
 describe("ChannelService", () => {
 	let channelService;
@@ -19,8 +14,8 @@ describe("ChannelService", () => {
 		channelService = new ChannelService({ dbClient: mockDbClient, drizzleOrm: mockDrizzleOrm });
 	});
 
-	afterAll(() => {
-		jest.resetAllMocks();
+	afterEach(() => {
+		vi.resetAllMocks();
 	});
 
 	test("should extends baseDbService methods", () => {

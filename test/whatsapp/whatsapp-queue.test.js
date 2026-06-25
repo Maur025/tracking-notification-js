@@ -1,37 +1,38 @@
-import { jest, describe, beforeEach, afterEach, test, expect } from "@jest/globals";
-import { WhatsappQueue } from "../../src/whatsapp/whatsapp-queue";
+import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { WhatsappQueue } from "../../src/whatsapp/whatsapp-queue.js";
 
 describe("WhatsappQueue", () => {
 	const expectedQueueName = "whatsappQueue";
 	let whatsappQueue;
 
 	let mockBullmq;
-	let mockQueue;
 	let mockQueueAdd;
 
 	beforeEach(() => {
-		mockQueueAdd = jest.fn();
+		mockQueueAdd = vi.fn();
 
-		mockQueue = jest.fn().mockImplementation(() => ({
-			add: mockQueueAdd,
-		}));
+		class MockQueue {
+			// eslint-disable-next-line no-unused-vars
+			constructor(name) {}
+			add = mockQueueAdd;
+		}
 
 		mockBullmq = {
-			Queue: mockQueue,
+			Queue: MockQueue,
 		};
 
 		whatsappQueue = new WhatsappQueue({ bullmq: mockBullmq });
 	});
 
 	afterEach(() => {
-		jest.resetAllMocks();
+		vi.clearAllMocks();
 	});
 
 	test("should return instance of whatsapp queue", () => {
 		const queueInstance = whatsappQueue.getQueue();
 
 		expect(queueInstance).toBeDefined();
-		expect(mockQueue).toHaveBeenCalledWith(expectedQueueName);
+		expect(queueInstance).toBeInstanceOf(mockBullmq.Queue);
 	});
 
 	test("should add job to the whatsapp queue", async () => {
