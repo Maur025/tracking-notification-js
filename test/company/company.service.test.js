@@ -24,9 +24,11 @@ describe("CompanyService", () => {
 		expect(companyService).toHaveProperty("save");
 		expect(companyService).toHaveProperty("findAll");
 		expect(companyService).toHaveProperty("findById");
-		expect(companyService).toHaveProperty("update");
+		expect(companyService).toHaveProperty("findByIdThrow");
+		expect(companyService).toHaveProperty("updateById");
 		expect(companyService).toHaveProperty("deleteById");
-		expect(companyService).toHaveProperty("processTransaction");
 		expect(companyService).toHaveProperty("count");
+		expect(companyService).toHaveProperty("updateBulk");
+		expect(companyService).toHaveProperty("processTransaction");
 	});
 });

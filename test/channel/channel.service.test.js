@@ -22,10 +22,12 @@ describe("ChannelService", () => {
 		expect(channelService).toHaveProperty("save");
 		expect(channelService).toHaveProperty("findAll");
 		expect(channelService).toHaveProperty("findById");
-		expect(channelService).toHaveProperty("update");
+		expect(channelService).toHaveProperty("findByIdThrow");
+		expect(channelService).toHaveProperty("updateById");
 		expect(channelService).toHaveProperty("deleteById");
-		expect(channelService).toHaveProperty("processTransaction");
 		expect(channelService).toHaveProperty("count");
+		expect(channelService).toHaveProperty("updateBulk");
+		expect(channelService).toHaveProperty("processTransaction");
 	});
 
 	test("should return channel type code when calling getChannelTypeCode", () => {

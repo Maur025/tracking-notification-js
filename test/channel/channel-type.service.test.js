@@ -24,9 +24,11 @@ describe("ChannelTypeService", () => {
 		expect(channelTypeService).toHaveProperty("save");
 		expect(channelTypeService).toHaveProperty("findAll");
 		expect(channelTypeService).toHaveProperty("findById");
-		expect(channelTypeService).toHaveProperty("update");
+		expect(channelTypeService).toHaveProperty("findByIdThrow");
+		expect(channelTypeService).toHaveProperty("updateById");
 		expect(channelTypeService).toHaveProperty("deleteById");
-		expect(channelTypeService).toHaveProperty("processTransaction");
 		expect(channelTypeService).toHaveProperty("count");
+		expect(channelTypeService).toHaveProperty("updateBulk");
+		expect(channelTypeService).toHaveProperty("processTransaction");
 	});
 });
