@@ -3,12 +3,20 @@ import { NodeControllerClient } from "tracking-common";
 export class SocketClient {
 	#environment;
 	#containerAdapter;
+	#socketClientHandler;
 
 	#wsClient;
 
-	constructor({ environments, containerAdapter }) {
+	/**
+	 * @param {object} request
+	 * @param { object} request.environments
+	 * @param {import("../container-adapter.js").ContainerAdapter} request.containerAdapter
+	 * @param {import("./socket-client-handler.js").SocketClientHandler} request.socketClientHandler
+	 */
+	constructor({ environments, containerAdapter, socketClientHandler }) {
 		this.#environment = environments;
 		this.#containerAdapter = containerAdapter;
+		this.#socketClientHandler = socketClientHandler;
 	}
 
 	initialize() {
@@ -17,8 +25,8 @@ export class SocketClient {
 			port: this.#environment.WS_GATEWAY_PORT_PROCESSOR,
 			type: "tracking-notification",
 			extra: {
-				portWs: this.#environment.APP_PORT,
-				portHttp: this.#environment.APP_PORT,
+				portWs: String(this.#environment.APP_PORT),
+				portHttp: String(this.#environment.APP_PORT),
 			},
 		});
 
@@ -28,12 +36,9 @@ export class SocketClient {
 	}
 
 	#socketEventListener() {
-		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) => {
-			console.log({
-				uuid,
-				_enterprises,
-			});
-		});
+		this.#wsClient.on("devices.subscribe", (subscriptions) =>
+			this.#socketClientHandler.onDevicesSubscriptions(subscriptions),
+		);
 	}
 
 	clientStart() {
