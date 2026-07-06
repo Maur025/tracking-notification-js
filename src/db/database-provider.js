@@ -2,13 +2,19 @@ import { drizzle } from "drizzle-orm/libsql";
 import { migrate } from "drizzle-orm/libsql/migrator";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
-import * as schema from "./schema.js";
+import { relations } from "./relation.js";
 
 export class DatabaseProvider {
 	#containerAdapter;
 	#dbClient;
 	#environment;
 
+	/**
+	 *
+	 * @param {object} request
+	 * @param {import("../ioc-container.js").ContainerAdapter} request.containerAdapter
+	 * @param {import("../environment/environment.js").Environment} request.environments
+	 */
 	constructor({ containerAdapter, environments }) {
 		this.#containerAdapter = containerAdapter;
 		this.#environment = environments;
@@ -26,7 +32,7 @@ export class DatabaseProvider {
 			connection: {
 				url: `file:${this.#environment.DB_URL}`,
 			},
-			schema,
+			relations,
 		});
 
 		this.#containerAdapter.registerValue("dbClient", this.#dbClient);

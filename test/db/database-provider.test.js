@@ -47,7 +47,7 @@ describe("DatabaseProvider", () => {
 				connection: {
 					url: `file:${mockEnvironment.DB_URL}`,
 				},
-				schema: expect.any(Object),
+				relations: expect.any(Object),
 			}),
 		);
 

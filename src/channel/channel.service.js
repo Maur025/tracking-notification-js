@@ -4,6 +4,11 @@ import { channelTypesTable } from "./channel-type.schema.js";
 import { channelsTable } from "./channel.schema.js";
 
 export class ChannelService extends BaseDbService {
+	/**
+	 * @param {object} request
+	 * @param {import("drizzle-orm/libsql").LibSQLDatabase} request.dbClient
+	 * @param {typeof import("drizzle-orm")} request.drizzleOrm
+	 */
 	constructor({ dbClient, drizzleOrm }) {
 		super({
 			dbClient,

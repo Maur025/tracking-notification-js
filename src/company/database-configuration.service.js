@@ -1,7 +1,7 @@
 import { BaseDbService } from "../db/base-db-service.js";
-import { channelTypesTable } from "./channel-type.schema.js";
+import { databaseConfigurationsTable } from "./database-configuration.schema.js";
 
-export class ChannelTypeService extends BaseDbService {
+export class DatabaseConfigurationService extends BaseDbService {
 	/**
 	 * @param {object} request
 	 * @param {import("drizzle-orm/libsql").LibSQLDatabase} request.dbClient
@@ -11,8 +11,8 @@ export class ChannelTypeService extends BaseDbService {
 		super({
 			dbClient,
 			drizzleOrm,
-			table: channelTypesTable,
-			tableName: "channelTypesTable",
+			table: databaseConfigurationsTable,
+			tableName: "databaseConfigurationsTable",
 		});
 	}
 }

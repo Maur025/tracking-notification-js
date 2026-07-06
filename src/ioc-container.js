@@ -33,6 +33,7 @@ import { ChannelService } from "./channel/channel.service.js";
 import { EmailService } from "./email/email.service.js";
 import { ErrorHandler } from "./server/error-handler.js";
 import { SocketServerHandler } from "./socket/socket-server-handler.js";
+import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
 import { SocketClientHandler } from "./socket/socket-client-handler.js";
 
 const iocContainer = createContainer({
@@ -107,6 +108,7 @@ iocContainer.register({
 	channelTypeService: asClass(ChannelTypeService).singleton(),
 	companyService: asClass(CompanyService).singleton(),
 	channelService: asClass(ChannelService).singleton(),
+	databaseConfigurationService: asClass(DatabaseConfigurationService).singleton(),
 
 	// db seeders
 	dbSeed: asClass(DbSeed).singleton(),

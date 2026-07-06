@@ -5,6 +5,14 @@ export class BaseDbService {
 	_drizzleOrm;
 	_withData;
 
+	/**
+	 * @param {object} request
+	 * @param {import("drizzle-orm/libsql").LibSQLDatabase} request.dbClient
+	 * @param {typeof import("drizzle-orm")} request.drizzleOrm
+	 * @param {import("drizzle-orm/sqlite-core").SQLiteTableWithColumns} request.table
+	 * @param {object} request.withData
+	 * @param {string} request.tableName
+	 */
 	constructor({ dbClient, drizzleOrm, table, withData, tableName }) {
 		this._dbClient = dbClient;
 		this._drizzleOrm = drizzleOrm;
@@ -13,46 +21,117 @@ export class BaseDbService {
 		this._withData = withData || {};
 	}
 
+	getConfigWithData() {
+		const config = {};
+
+		if (this._withData) {
+			config.with = this._withData;
+		}
+
+		return config;
+	}
+
+	/**
+	 * @param {object} request
+	 * @param {object} request.data
+	 */
 	async save({ data }) {
-		return this.processTransaction(async (transaction) =>
-			transaction.insert(this._table).values(data).returning(),
-		);
+		return this._dbClient.insert(this._table).values(data).returning();
 	}
 
 	async findAll() {
-		console.log({ tableName: this._tableName });
+		const config = this.getConfigWithData();
 
 		return this._dbClient.query[this._tableName].findMany({
-			with: this._withData,
+			...config,
 		});
 	}
 
+	/**
+	 * @param {object} request
+	 * @param {string} request.id
+	 */
 	async findById({ id }) {
-		const [row] = await this._dbClient
-			.select()
-			.from(this._table)
+		const config = this.getConfigWithData();
+
+		return this._dbClient.query[this._tableName].findFirst({
+			...config,
+			where: {
+				id: id,
+			},
+		});
+	}
+
+	/**
+	 * @param {object} request
+	 * @param {string} request.id
+	 */
+	async findByIdThrow({ id }) {
+		const existingRecord = await this.findById({ id });
+
+		if (!existingRecord) {
+			throw new Error(`Record with id ${id} not found in ${this._tableName}`);
+		}
+
+		return existingRecord;
+	}
+
+	/**
+	 * @param {object} request
+	 * @param {object} request.data
+	 * @param {string} request.id
+	 */
+	async updateById({ data, id }) {
+		await this.findByIdThrow({ id });
+
+		return this._dbClient
+			.update(this._table)
+			.set(data)
 			.where(this._drizzleOrm.eq(this._table.id, id))
-			.limit(1);
-
-		return row || null;
+			.returning();
 	}
 
-	async update({ data, id }) {
-		return this.processTransaction(async (transaction) =>
-			transaction
-				.update(this._table)
-				.set(data)
-				.where(this._drizzleOrm.eq(this._table.id, id))
-				.returning(),
-		);
-	}
-
+	/**
+	 * @param {object} request
+	 * @param {string} request.id
+	 */
 	async deleteById({ id }) {
-		await this.processTransaction(async (transaction) =>
-			transaction.delete(this._table).where(this._drizzleOrm.eq(this._table.id, id)),
-		);
+		await this.findByIdThrow({ id });
+
+		await this._dbClient.delete(this._table).where(this._drizzleOrm.eq(this._table.id, id));
 	}
 
+	async count() {
+		const [{ count }] = await this._dbClient
+			.select({ count: this._drizzleOrm.count() })
+			.from(this._table);
+		return count;
+	}
+	/**
+	 * @typedef {object} UpdateBulkRequest
+	 * @property {string} id - The ID of the record to update.
+	 * @property {object} data - The data to update the record with.
+	 *
+	 * @param {UpdateBulkRequest[]} request
+	 */
+	async updateBulk(updates) {
+		return this.processTransaction(async (transaction) => {
+			const promises = updates.map(({ id, data }) =>
+				transaction
+					.update(this._table)
+					.set(data)
+					.where(this._drizzleOrm.eq(this._table.id, id)),
+			);
+
+			const results = await Promise.all(promises);
+			return results.flat();
+		});
+	}
+
+	/**
+	 * @param {Function} processCallback
+	 * @param {Function|undefined} errorCallback
+	 */
 	async processTransaction(processCallback, errorCallback) {
 		try {
 			return await this._dbClient.transaction(async (transaction) => {
@@ -67,12 +146,5 @@ export class BaseDbService {
 
 			throw error;
 		}
-	}
-
-	async count() {
-		const [{ count }] = await this._dbClient
-			.select({ count: this._drizzleOrm.count() })
-			.from(this._table);
-		return count;
 	}
 }
