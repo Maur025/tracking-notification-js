@@ -1,10 +1,8 @@
 import "dotenv/config";
-import { overrideLog } from "atx-prettylog";
+import { logger } from "./common/logger.js";
 import { iocContainer } from "./ioc-container.js";
 
 async function bootstrap() {
-	overrideLog();
-
 	const databaseProvider = iocContainer.resolve("databaseProvider");
 	const redisApp = iocContainer.resolve("redisApp");
 
@@ -34,7 +32,7 @@ async function bootstrap() {
 
 		await serverApp.listen();
 	} catch (error) {
-		console.error("Error starting the application:", error);
+		logger.error("Error starting the application:", error);
 
 		process.exit(1);
 	}

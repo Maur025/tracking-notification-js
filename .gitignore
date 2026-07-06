@@ -158,3 +158,6 @@ src/email/mock-connection-email-data.js
 
 # sql lite database
 *.db
+
+# ignore files of example data
+devices.subscriptions.json
