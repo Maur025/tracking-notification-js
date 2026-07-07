@@ -129,6 +129,20 @@ export class BaseDbService {
 	}
 
 	/**
+	 * @param {object[]} dataArray
+	 */
+	async saveBulk(dataArray) {
+		return this.processTransaction(async (transaction) => {
+			const promises = dataArray.map((data) =>
+				transaction.insert(this._table).values(data).returning(),
+			);
+
+			const results = await Promise.all(promises);
+			return results.flat();
+		});
+	}
+
+	/**
 	 * @param {Function} processCallback
 	 * @param {Function|undefined} errorCallback
 	 */
