@@ -15,4 +15,17 @@ export class DatabaseConfigurationService extends BaseDbService {
 			tableName: "databaseConfigurationsTable",
 		});
 	}
+
+	/**
+	 * @param {object} request
+	 * @param {string[]} request.referenceIds
+	 */
+	findAllByReferenceIdIn({ referenceIds }) {
+		const config = this.getConfigWithData();
+
+		return this._dbClient.query[this._tableName].findMany({
+			...config,
+			where: (config, { inArray }) => inArray(config.referenceId, referenceIds),
+		});
+	}
 }

@@ -1,0 +1,1 @@
+CREATE UNIQUE INDEX `database_configurations_reference_id_unique` ON `database_configurations` (`database`,`reference_id`);

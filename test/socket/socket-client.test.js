@@ -1,14 +1,12 @@
 import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
 import { SocketClient } from "../../src/socket/socket-client.js";
 
-const mockWsClientManagerOn = vi.fn();
+const mockWsClientOn = vi.fn();
 
 vi.mock("tracking-common", () => {
 	class NodeControllerClient {
 		constructor() {}
-		wsClientManager = {
-			on: mockWsClientManagerOn,
-		};
+		on = mockWsClientOn;
 	}
 
 	return { NodeControllerClient };
@@ -48,7 +46,7 @@ describe("SocketClient", () => {
 	test("should initialize with correct environments", () => {
 		socketClient.initialize();
 
-		expect(mockWsClientManagerOn).toHaveBeenCalled();
+		expect(mockWsClientOn).toHaveBeenCalled();
 		expect(mockContainerRegisterValue).toHaveBeenCalledWith("wsClient", expect.any(Object));
 	});
 });

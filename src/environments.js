@@ -1,5 +1,5 @@
 const {
-	APP_PORT = 7768,
+	APP_PORT = 8801,
 	APP_STATIC_PUBLIC_PATH = "./public",
 
 	REDIS_HOST = "localhost",

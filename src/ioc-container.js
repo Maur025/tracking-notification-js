@@ -34,6 +34,7 @@ import { EmailService } from "./email/email.service.js";
 import { ErrorHandler } from "./server/error-handler.js";
 import { SocketServerHandler } from "./socket/socket-server-handler.js";
 import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
+import { SocketClientHandler } from "./socket/socket-client-handler.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -63,6 +64,7 @@ iocContainer.register({
 	errorHandler: asClass(ErrorHandler).singleton(),
 	redisApp: asClass(RedisApp).singleton(),
 	socketServerHandler: asClass(SocketServerHandler).singleton(),
+	socketClientHandler: asClass(SocketClientHandler).singleton(),
 
 	// bullmq workers
 	emailWorker: asClass(EmailWorker).singleton(),
