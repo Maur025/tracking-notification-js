@@ -60,8 +60,12 @@ export const transformDevicesSubscriptionsInMap = (subscriptions) => {
 	const dbResources = new Map();
 
 	for (const subscription of subscriptions) {
-		const { uuid, info, databases } = subscription.backend;
-		const { address, apiPort } = info;
+		const { uuid, info, databases = [] } = subscription.backend;
+		const { address, apiPort } = info ?? {};
+
+		if (!uuid || !info?.address || !info?.apiPort || !databases || databases.length <= 0) {
+			continue;
+		}
 
 		if (dbResources.has(uuid)) {
 			const newData = addMissingDbs({
