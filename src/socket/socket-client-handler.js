@@ -2,13 +2,16 @@ import { transformDevicesSubscriptionsInMap } from "../common/transform-devices-
 
 export class SocketClientHandler {
 	#databaseConfigurationService;
+	#registerChannelOfDbConfigAction;
 
 	/**
 	 * @param {object} request
 	 * @param {import('../company/database-configuration.service.js').DatabaseConfigurationService} request.databaseConfigurationService
+	 * @param {import('../channel/action/register-channel-of-db-config.action.js').RegisterChannelOfDbConfigAction} request.registerChannelOfDbConfigAction
 	 */
-	constructor({ databaseConfigurationService }) {
+	constructor({ databaseConfigurationService, registerChannelOfDbConfigAction }) {
 		this.#databaseConfigurationService = databaseConfigurationService;
+		this.#registerChannelOfDbConfigAction = registerChannelOfDbConfigAction;
 	}
 
 	onDevicesSubscriptions = async (subscriptions) => {
@@ -36,8 +39,9 @@ export class SocketClientHandler {
 			(resource) => !dbConfigurationMap.has(`${resource.referenceId}|${resource.database}`),
 		);
 
-		const result = await this.#databaseConfigurationService.saveBulk(dataFiltered);
-		console.log({ result });
+		await this.#databaseConfigurationService.saveBulk(dataFiltered);
+
+		await this.#registerChannelOfDbConfigAction.execute({ configurations: dataFiltered });
 	};
 
 	/**

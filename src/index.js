@@ -30,6 +30,11 @@ async function bootstrap() {
 		const dbSeed = iocContainer.resolve("dbSeed");
 		await dbSeed.runSeeders();
 
+		const registerChannelOfDbConfigAction = iocContainer.resolve(
+			"registerChannelOfDbConfigAction",
+		);
+		await registerChannelOfDbConfigAction.execute({});
+
 		await serverApp.listen();
 	} catch (error) {
 		logger.error("Error starting the application:", error);
