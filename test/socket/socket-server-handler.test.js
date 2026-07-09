@@ -26,7 +26,6 @@ describe("SocketServerHandler", () => {
 		const requestData = {
 			toList: Array.from({ length: 15 }, (_, i) => `user${i}@example.com`),
 			channelIds: ["channel1"],
-			companyId: "company1",
 			subject: "Test Subject",
 			message: "Hello World!",
 		};

@@ -7,6 +7,12 @@ export class EmailWorker {
 
 	#emailWorker;
 
+	/**
+	 * @param {object} request
+	 * @param {typeof import('bullmq')} request.bullmq
+	 * @param {import("./email-worker.service.js").EmailWorkerService} request.emailWorkerService
+	 * @param {import("../container/container-adapter.js").ContainerAdapter} request.containerAdapter
+	 */
 	constructor({ bullmq, emailWorkerService, containerAdapter }) {
 		this.#bullmq = bullmq;
 		this.#containerAdapter = containerAdapter;

@@ -1,6 +1,10 @@
 export class EmailWorkerService {
 	#emailNotifier;
 
+	/**
+	 * @param {object} request
+	 * @param {import("./email-notifier.js").EmailNotifier} request.emailNotifier
+	 */
 	constructor({ emailNotifier }) {
 		this.#emailNotifier = emailNotifier;
 	}

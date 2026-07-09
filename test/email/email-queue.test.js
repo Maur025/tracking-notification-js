@@ -57,7 +57,7 @@ describe("EmailQueue", () => {
 			jobName,
 			payload,
 			expect.objectContaining({
-				attempts: 5,
+				attempts: 6,
 			}),
 		);
 		expect(result).toEqual(expectedQueueReturn);

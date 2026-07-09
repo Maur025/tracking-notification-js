@@ -27,7 +27,7 @@ export class ChannelService extends BaseDbService {
 				channelTypesTable,
 				this._drizzleOrm.eq(this._table.channelTypeId, channelTypesTable.id),
 			)
-			.innerJoin(
+			.leftJoin(
 				companiesTable,
 				this._drizzleOrm.eq(this._table.companyId, companiesTable.id),
 			);

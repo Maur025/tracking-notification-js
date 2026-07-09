@@ -116,7 +116,7 @@ describe("EmailNotifier", () => {
 		await expect(emailNotifier.send(notifierPayload)).rejects.toThrow();
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
 			expect.stringContaining("[EMAIL-NOTIFICATION] Error sending email notification:"),
-			expect.any(Error),
+			expect.stringContaining("Failed to send email"),
 		);
 	});
 

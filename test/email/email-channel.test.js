@@ -66,13 +66,15 @@ describe("EmailChannel", () => {
 	test("should fail to initialize email client", async () => {
 		mockTransportVerify.mockRejectedValue(new Error("Connection failed"));
 
-		await emailChannel.initialize();
+		const initializeCall = emailChannel.initialize();
+
+		await expect(initializeCall).rejects.toThrow("Connection failed");
 
 		expect(mockTransportVerify).toHaveBeenCalled();
 		expect(consoleInfoSpy).not.toHaveBeenCalled();
 		expect(consoleErrorSpy).toHaveBeenCalledWith(
 			"[EMAIL-CHANNEL] Error creating email client:",
-			expect.any(Error),
+			expect.stringContaining("Connection failed"),
 		);
 	});
 

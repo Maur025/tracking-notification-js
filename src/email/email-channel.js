@@ -31,7 +31,8 @@ export class EmailChannel {
 			await this.#emailClient.verify();
 			console.info("[EMAIL-CHANNEL] Email client is ready to send messages");
 		} catch (error) {
-			console.error("[EMAIL-CHANNEL] Error creating email client:", error);
+			console.error("[EMAIL-CHANNEL] Error creating email client:", error.message);
+			throw error;
 		}
 	}
 
@@ -48,7 +49,12 @@ export class EmailChannel {
 	}
 
 	send(mailOptions) {
-		this.#emailClient.sendMail(mailOptions);
+		try {
+			this.#emailClient.sendMail(mailOptions);
+		} catch (error) {
+			console.error("[EMAIL-CHANNEL] Error sending email:", error.message);
+			throw error;
+		}
 	}
 
 	close() {
