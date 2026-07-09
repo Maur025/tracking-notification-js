@@ -7,5 +7,4 @@ export const EmailAddQueueRequest = object({
 	channelIds: array(string().nonempty("channelId is required")).nonempty(
 		"Channel IDs are required",
 	),
-	companyId: string().nonempty("Company ID is required"),
 });

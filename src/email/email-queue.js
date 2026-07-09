@@ -15,8 +15,8 @@ export class EmailQueue {
 
 	async addToQueue(jobName, payload) {
 		const job = await this.#emailQueue.add(jobName, payload, {
-			attempts: 5,
-			backoff: { type: "exponential", delay: 8000 },
+			attempts: 6,
+			backoff: { type: "exponential", delay: 10000 },
 		});
 
 		return {
