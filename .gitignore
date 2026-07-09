@@ -161,3 +161,7 @@ src/email/mock-connection-email-data.js
 
 # ignore files of example data
 devices.subscriptions.json
+
+# baileys auth info
+auth_info_baileys/
+whatsapp_session/
