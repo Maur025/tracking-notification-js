@@ -1,4 +1,5 @@
 allowBuilds:
+  '@whiskeysockets/baileys': false
   baileys: false
   better-sqlite3: false
   es5-ext: false
