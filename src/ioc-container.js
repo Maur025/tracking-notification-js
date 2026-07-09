@@ -6,6 +6,7 @@ import bullmq from "bullmq";
 import nodemailer from "nodemailer";
 import playwright from "playwright";
 import * as drizzleOrm from "drizzle-orm";
+import axios from "axios";
 import { ServerApp } from "./server/server-app.js";
 import { WhatsappController } from "./whatsapp/whatsapp.controller.js";
 import { EmailController } from "./email/email.controller.js";
@@ -35,6 +36,7 @@ import { ErrorHandler } from "./server/error-handler.js";
 import { SocketServerHandler } from "./socket/socket-server-handler.js";
 import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
 import { SocketClientHandler } from "./socket/socket-client-handler.js";
+import { RegisterChannelOfDbConfigAction } from "./channel/action/register-channel-of-db-config.action.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -53,6 +55,7 @@ iocContainer.register({
 	nodemailer: asValue(nodemailer),
 	playwright: asValue(playwright),
 	drizzleOrm: asValue(drizzleOrm),
+	axios: asValue(axios),
 
 	//Container
 	container: asValue(iocContainer),
@@ -115,6 +118,9 @@ iocContainer.register({
 
 	// controller services
 	emailService: asClass(EmailService).singleton(),
+
+	// actions
+	registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
 });
 
 export { iocContainer };

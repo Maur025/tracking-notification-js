@@ -15,7 +15,7 @@ export class ChannelService extends BaseDbService {
 			drizzleOrm,
 			table: channelsTable,
 			tableName: "channelsTable",
-			withData: { channelType: true, company: true },
+			withData: { channelType: true, company: false },
 		});
 	}
 

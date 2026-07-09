@@ -1,3 +1,10 @@
+import {
+	validateAndParse,
+	calculateTotalPages,
+	mapOrderBy,
+	getOrderByValues,
+} from "../common/pagination-helper.js";
+
 export class BaseDbService {
 	_dbClient;
 	_table;
@@ -45,6 +52,36 @@ export class BaseDbService {
 		return this._dbClient.query[this._tableName].findMany({
 			...config,
 		});
+	}
+
+	/**
+	 * @param {object} request
+	 * @param {number} request.page
+	 * @param {number} request.size
+	 * @param {string|[string, boolean][]} request.orderBy
+	 * @param {boolean|undefined} request.descending
+	 */
+	async findAllWithPagination(request) {
+		const { size, offset, orderBy, descending } = validateAndParse(request);
+
+		const config = this.getConfigWithData();
+		const orderConfig = mapOrderBy(getOrderByValues(orderBy, descending));
+
+		const [total, result] = await Promise.all([
+			this.count(),
+			this._dbClient.query[this._tableName].findMany({
+				...config,
+				...orderConfig,
+				limit: size,
+				offset,
+			}),
+		]);
+
+		return {
+			data: result,
+			totalPages: calculateTotalPages(total, size),
+			totalElements: total,
+		};
 	}
 
 	/**
