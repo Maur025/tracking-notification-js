@@ -37,6 +37,10 @@ import { SocketServerHandler } from "./socket/socket-server-handler.js";
 import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
 import { SocketClientHandler } from "./socket/socket-client-handler.js";
 import { RegisterChannelOfDbConfigAction } from "./channel/action/register-channel-of-db-config.action.js";
+import { WhatsappCredService } from "./whatsapp/services/whatsapp-cred.service.js";
+import { WhatsappKeyService } from "./whatsapp/services/whatsapp-key.service.js";
+import { WhatsappAuthManager } from "./whatsapp/whatsapp-auth-manager.js";
+import { WhatsappAuthentication } from "./whatsapp/whatsapp-authentication.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -112,6 +116,8 @@ iocContainer.register({
 	companyService: asClass(CompanyService).singleton(),
 	channelService: asClass(ChannelService).singleton(),
 	databaseConfigurationService: asClass(DatabaseConfigurationService).singleton(),
+	whatsappCredService: asClass(WhatsappCredService).singleton(),
+	whatsappKeyService: asClass(WhatsappKeyService).singleton(),
 
 	// db seeders
 	dbSeed: asClass(DbSeed).singleton(),
@@ -121,6 +127,10 @@ iocContainer.register({
 
 	// actions
 	registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
+
+	// whatsapp authentication
+	whatsappAuthManager: asClass(WhatsappAuthManager).singleton(),
+	whatsappAuthentication: asClass(WhatsappAuthentication).singleton(),
 });
 
 export { iocContainer };

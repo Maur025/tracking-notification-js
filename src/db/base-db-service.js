@@ -43,7 +43,14 @@ export class BaseDbService {
 	 * @param {object} request.data
 	 */
 	async save({ data }) {
-		return this._dbClient.insert(this._table).values(data).returning();
+		return this._dbClient
+			.insert(this._table)
+			.values(data)
+			.onConflictDoUpdate({
+				target: this._table.id,
+				set: data,
+			})
+			.returning();
 	}
 
 	async findAll() {
