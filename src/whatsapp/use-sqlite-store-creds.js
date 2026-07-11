@@ -1,12 +1,11 @@
-import { initAuthCreds } from "@whiskeysockets/baileys";
+import { initAuthCreds, proto } from "@whiskeysockets/baileys";
 import { iocContainer } from "../ioc-container.js";
 
-export const useSqliteStoreCreds = async (credId = null) => {
+export const useSqliteStoreCreds = async (credId) => {
 	/** @type {import('./whatsapp-auth-manager.js').WhatsappAuthManager} */
 	const whatsappAuthManager = iocContainer.resolve("whatsappAuthManager");
 
 	let creds = null;
-	let localCredId = credId;
 
 	if (credId) {
 		creds = await whatsappAuthManager.getCreds({ credId });
@@ -14,23 +13,57 @@ export const useSqliteStoreCreds = async (credId = null) => {
 
 	if (!creds) {
 		creds = initAuthCreds();
-		localCredId = await whatsappAuthManager.saveCreds({ creds });
+		await whatsappAuthManager.saveCreds({ creds, credId });
 	}
 
 	const saveCreds = async () => {
-		await whatsappAuthManager.saveCreds({ creds });
+		await whatsappAuthManager.saveCreds({ creds, credId });
 	};
 
 	const get = async (type, ids) => {
 		const data = {};
 
-		const keys = await Promise.all(
-			ids.map(async (id) =>
-				whatsappAuthManager.getKey({ credId: localCredId, keyType: type, keyId: id }),
-			),
-		);
+		const keyRows = await whatsappAuthManager.getKeys({
+			credId,
+			keyType: type,
+			keyIds: ids,
+		});
 
-		for (const id of ids) {
+		for (const keyRow of keyRows) {
+			let value = whatsappAuthManager.getKeyValue({ key: keyRow });
+
+			if (type === "app-state-sync-key" && value) {
+				value = proto.Message.AppStateSyncKeyData.fromObject(value);
+			}
+
+			data[keyRow.keyId] = value;
+		}
+
+		return data;
+	};
+
+	const set = async (data) => {
+		for (const type in data) {
+			for (const id in data[type]) {
+				const value = data[type][id];
+
+				if (value) {
+					await whatsappAuthManager.saveKey({
+						credId,
+						keyType: type,
+						keyId: id,
+						keyValue: value,
+					});
+
+					continue;
+				}
+
+				await whatsappAuthManager.deleteKey({
+					credId,
+					keyType: type,
+					keyId: id,
+				});
+			}
 		}
 	};
 
@@ -39,6 +72,7 @@ export const useSqliteStoreCreds = async (credId = null) => {
 			creds,
 			keys: {
 				get,
+				set,
 			},
 		},
 		saveCreds,

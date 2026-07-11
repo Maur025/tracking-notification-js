@@ -10,4 +10,22 @@ export class WhatsappCredService extends BaseDbService {
 	constructor({ dbClient, drizzleOrm }) {
 		super({ dbClient, drizzleOrm, table: whatsappCredsTable, tableName: "whatsappCredsTable" });
 	}
+
+	async saveOrUpdate({ data }) {
+		// eslint-disable-next-line no-unused-vars
+		const { id, ...updateData } = data;
+
+		console.log(data);
+
+		const rows = await this._dbClient
+			.insert(this._table)
+			.values(data)
+			.onConflictDoUpdate({
+				target: this._table.id,
+				set: updateData,
+			})
+			.returning();
+
+		return rows[0];
+	}
 }

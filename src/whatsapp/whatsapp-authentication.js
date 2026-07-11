@@ -1,17 +1,19 @@
-export class WhatsappAuthentication {
-	#whatsappAuthManager;
+import { v4 as uuidv4 } from "uuid";
+import { WhatsappChannel } from "./whatsapp-channel.js";
 
+export class WhatsappAuthentication {
 	/**
 	 * @param {object} request
-	 * @param {import('./whatsapp-auth-manager.js').WhatsappAuthManager} request.whatsappAuthManager
 	 */
-	constructor({ whatsappAuthManager }) {
-		this.#whatsappAuthManager = whatsappAuthManager;
+	constructor() {}
+
+	async requestNewAuthentication() {
+		const credId = uuidv4();
+
+		console.log({ credId });
+
+		const whatsappChannel = new WhatsappChannel();
+
+		await whatsappChannel.initialize({ credId });
 	}
-
-	async requestNewAuthentication() {}
-
-	useSqliteState = async () => {
-		return {};
-	};
 }

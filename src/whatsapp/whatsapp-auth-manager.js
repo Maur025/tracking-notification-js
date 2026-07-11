@@ -22,14 +22,15 @@ export class WhatsappAuthManager {
 			return null;
 		}
 
-		return JSON.parse(cred.creds_json, BufferJSON.reviver);
+		return JSON.parse(cred.credsJson, BufferJSON.reviver);
 	}
 
-	async saveCreds({ creds }) {
+	async saveCreds({ creds, credId = null }) {
 		const credsStr = JSON.stringify(creds, BufferJSON.replacer);
 
-		const savedCred = await this.#whatsappCredService.save({
+		const savedCred = await this.#whatsappCredService.saveOrUpdate({
 			data: {
+				id: credId,
 				credsJson: credsStr,
 				numberIdentifier: null,
 			},
@@ -38,18 +39,16 @@ export class WhatsappAuthManager {
 		return savedCred.id;
 	}
 
-	async getKey({ credId, keyType, keyId }) {
-		const key = await this.#whatsappKeyService.findByCredIdAndKeyTypeAndKeyId({
+	getKeyValue({ key }) {
+		return JSON.parse(key.valueJson, BufferJSON.reviver);
+	}
+
+	async getKeys({ credId, keyType, keyIds }) {
+		return this.#whatsappKeyService.findByCredIdAndKeyTypeAndKeyIdIn({
 			credId,
 			keyType,
-			keyId,
+			keyIds,
 		});
-
-		if (!key) {
-			return null;
-		}
-
-		return JSON.parse(key.value_json, BufferJSON.reviver);
 	}
 
 	async saveKey({ credId, keyType, keyId, keyValue }) {
@@ -66,17 +65,17 @@ export class WhatsappAuthManager {
 	}
 
 	async deleteKey({ credId, keyType, keyId }) {
-		const key = await this.#whatsappKeyService.findByCredIdAndKeyTypeAndKeyId({
-			credId,
-			keyType,
-			keyId,
-		});
-
-		if (!key) {
-			logger.error("Key not found for deletion", { credId, keyType, keyId });
-			return;
+		try {
+			await this.#whatsappKeyService.deleteByCredIdAndKeyTypeAndKeyId({
+				credId,
+				keyType,
+				keyId,
+			});
+		} catch (error) {
+			logger.error(
+				`Error deleting key with credId: ${credId}, keyType: ${keyType}, keyId: ${keyId}`,
+				error,
+			);
 		}
-
-		await this.#whatsappKeyService.deleteById({ id: key.id });
 	}
 }
