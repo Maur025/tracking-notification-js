@@ -1,0 +1,713 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "id": "a3a3466e-564a-43c5-9c85-7b6bfd43da84",
+  "prevIds": [
+    "60eb47fc-c7e3-4dca-91a0-84bc2662cabe"
+  ],
+  "ddl": [
+    {
+      "name": "channel_assign_wp_creds",
+      "entityType": "tables"
+    },
+    {
+      "name": "channel_types",
+      "entityType": "tables"
+    },
+    {
+      "name": "channels",
+      "entityType": "tables"
+    },
+    {
+      "name": "companies",
+      "entityType": "tables"
+    },
+    {
+      "name": "database_configurations",
+      "entityType": "tables"
+    },
+    {
+      "name": "whatsapp_creds",
+      "entityType": "tables"
+    },
+    {
+      "name": "whatsapp_keys",
+      "entityType": "tables"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "channel_id",
+      "entityType": "columns",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "whatsapp_cred_id",
+      "entityType": "columns",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "channel_types"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "channel_types"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "channel_types"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "channel_types"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "code",
+      "entityType": "columns",
+      "table": "channel_types"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "channel_type_id",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "company_id",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reference_id",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "host",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "port",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "username",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "password",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": "false",
+      "generated": null,
+      "name": "secure",
+      "entityType": "columns",
+      "table": "channels"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "companies"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "companies"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "companies"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "name",
+      "entityType": "columns",
+      "table": "companies"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reference_id",
+      "entityType": "columns",
+      "table": "companies"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "host",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "port",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "database",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "reference_id",
+      "entityType": "columns",
+      "table": "database_configurations"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "whatsapp_creds"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "whatsapp_creds"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "whatsapp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "creds_json",
+      "entityType": "columns",
+      "table": "whatsapp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "phone_number_identifier",
+      "entityType": "columns",
+      "table": "whatsapp_creds"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "id",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "created_at",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "integer",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "updated_at",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "key_type",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "key_id",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "text",
+      "notNull": false,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "value_json",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "type": "text",
+      "notNull": true,
+      "autoincrement": false,
+      "default": null,
+      "generated": null,
+      "name": "cred_id",
+      "entityType": "columns",
+      "table": "whatsapp_keys"
+    },
+    {
+      "columns": [
+        "channel_id"
+      ],
+      "tableTo": "channels",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_channel_assign_wp_creds_channel_id_channels_id_fk",
+      "entityType": "fks",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "columns": [
+        "whatsapp_cred_id"
+      ],
+      "tableTo": "whatsapp_creds",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_channel_assign_wp_creds_whatsapp_cred_id_whatsapp_creds_id_fk",
+      "entityType": "fks",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "columns": [
+        "channel_type_id"
+      ],
+      "tableTo": "channel_types",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_channels_channel_type_id_channel_types_id_fk",
+      "entityType": "fks",
+      "table": "channels"
+    },
+    {
+      "columns": [
+        "company_id"
+      ],
+      "tableTo": "companies",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "NO ACTION",
+      "nameExplicit": false,
+      "name": "fk_channels_company_id_companies_id_fk",
+      "entityType": "fks",
+      "table": "channels"
+    },
+    {
+      "columns": [
+        "cred_id"
+      ],
+      "tableTo": "whatsapp_creds",
+      "columnsTo": [
+        "id"
+      ],
+      "onUpdate": "NO ACTION",
+      "onDelete": "CASCADE",
+      "nameExplicit": false,
+      "name": "fk_whatsapp_keys_cred_id_whatsapp_creds_id_fk",
+      "entityType": "fks",
+      "table": "whatsapp_keys"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "channel_assign_wp_creds_pk",
+      "table": "channel_assign_wp_creds",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "channel_types_pk",
+      "table": "channel_types",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "channels_pk",
+      "table": "channels",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "companies_pk",
+      "table": "companies",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "database_configurations_pk",
+      "table": "database_configurations",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "whatsapp_creds_pk",
+      "table": "whatsapp_creds",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        "id"
+      ],
+      "nameExplicit": false,
+      "name": "whatsapp_keys_pk",
+      "table": "whatsapp_keys",
+      "entityType": "pks"
+    },
+    {
+      "columns": [
+        {
+          "value": "channel_id",
+          "isExpression": false
+        },
+        {
+          "value": "whatsapp_cred_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "assign_channel_id_whatsapp_cred_id_unique",
+      "entityType": "indexes",
+      "table": "channel_assign_wp_creds"
+    },
+    {
+      "columns": [
+        {
+          "value": "database",
+          "isExpression": false
+        },
+        {
+          "value": "reference_id",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "database_configurations_reference_id_unique",
+      "entityType": "indexes",
+      "table": "database_configurations"
+    },
+    {
+      "columns": [
+        {
+          "value": "cred_id",
+          "isExpression": false
+        },
+        {
+          "value": "key_id",
+          "isExpression": false
+        },
+        {
+          "value": "key_type",
+          "isExpression": false
+        }
+      ],
+      "isUnique": true,
+      "where": null,
+      "origin": "manual",
+      "name": "whatsapp_keys_cred_id_key_id_unique",
+      "entityType": "indexes",
+      "table": "whatsapp_keys"
+    },
+    {
+      "columns": [
+        "code"
+      ],
+      "nameExplicit": false,
+      "name": "channel_types_code_unique",
+      "entityType": "uniques",
+      "table": "channel_types"
+    },
+    {
+      "columns": [
+        "phone_number_identifier"
+      ],
+      "nameExplicit": false,
+      "name": "whatsapp_creds_phone_number_identifier_unique",
+      "entityType": "uniques",
+      "table": "whatsapp_creds"
+    }
+  ],
+  "renames": []
+}

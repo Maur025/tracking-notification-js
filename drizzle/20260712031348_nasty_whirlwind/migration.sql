@@ -1,0 +1,2 @@
+CREATE UNIQUE INDEX `channel_assign_wp_creds_channel_id_whatsapp_cred_id_unique` ON `channel_assign_wp_creds` (`channel_id`,`whatsapp_cred_id`);--> statement-breakpoint
+CREATE UNIQUE INDEX `whatsapp_keys_cred_id_key_id_unique` ON `whatsapp_keys` (`cred_id`,`key_id`,`key_type`);

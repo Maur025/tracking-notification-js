@@ -6,6 +6,11 @@ export class EmailController {
 	#resource = "emails";
 	#emailService;
 
+	/**
+	 *
+	 * @param {object} request
+	 * @param {import('./email.service.js').EmailService} request.emailService
+	 */
 	constructor({ emailService }) {
 		this.#emailService = emailService;
 	}

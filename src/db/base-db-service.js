@@ -43,7 +43,9 @@ export class BaseDbService {
 	 * @param {object} request.data
 	 */
 	async save({ data }) {
-		return this._dbClient.insert(this._table).values(data).returning();
+		const [result] = await this._dbClient.insert(this._table).values(data).returning();
+
+		return result;
 	}
 
 	async findAll() {
