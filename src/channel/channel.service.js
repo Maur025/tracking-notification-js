@@ -60,8 +60,6 @@ export class ChannelService extends BaseDbService {
 			return null;
 		}
 
-		console.log(result);
-
 		return {
 			...result.channels,
 			channelType: result.channel_types,
