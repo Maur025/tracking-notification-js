@@ -54,7 +54,7 @@ export class WhatsappAuthManager {
 	async saveKey({ credId, keyType, keyId, keyValue }) {
 		const keyValueStr = JSON.stringify(keyValue, BufferJSON.replacer);
 
-		await this.#whatsappKeyService.save({
+		await this.#whatsappKeyService.saveOrUpdate({
 			data: {
 				credId,
 				keyType,

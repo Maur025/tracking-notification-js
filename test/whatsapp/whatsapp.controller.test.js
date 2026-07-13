@@ -22,7 +22,7 @@ describe("WhatsappController", () => {
 	});
 
 	test("should register routes correctly", () => {
-		const expectedPostCalls = 1;
+		const expectedPostCalls = 3;
 		const expectedGetCalls = 1;
 
 		whatsappController.registerRoutes(app);

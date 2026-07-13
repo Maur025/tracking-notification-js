@@ -15,8 +15,6 @@ export class WhatsappCredService extends BaseDbService {
 		// eslint-disable-next-line no-unused-vars
 		const { id, ...updateData } = data;
 
-		console.log(data);
-
 		const rows = await this._dbClient
 			.insert(this._table)
 			.values(data)

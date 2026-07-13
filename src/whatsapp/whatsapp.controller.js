@@ -65,7 +65,9 @@ export class WhatsappController {
 	 * @param {import('express').Response} res
 	 */
 	async #handlePostAuth(req, res) {
-		await this.#whatsappAuthentication.requestNewAuthentication();
+		await this.#whatsappAuthentication.requestNewAuthentication({
+			channelId: req.body.channelId,
+		});
 
 		return res.status(StatusCodes.OK).json(
 			serverResponse({

@@ -44,6 +44,8 @@ import { WhatsappAuthentication } from "./whatsapp/whatsapp-authentication.js";
 import { ChannelAssignWpCredService } from "./channel/channel-assign-wp-cred.service.js";
 import { WhatsappCredChannelCreateAction } from "./whatsapp/action/whatsapp-cred-channel-create.action.js";
 import { WhatsappService } from "./whatsapp/whatsapp.service.js";
+import { WhatsappNotifier } from "./whatsapp/whatsapp-notifier.js";
+import { WhatsappProvider } from "./whatsapp/whatsapp-provider.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -110,9 +112,11 @@ iocContainer.register({
 	// providers
 	databaseProvider: asClass(DatabaseProvider).singleton(),
 	emailProvider: asClass(EmailProvider).singleton(),
+	whatsappProvider: asClass(WhatsappProvider).singleton(),
 
 	// notifiers
 	emailNotifier: asClass(EmailNotifier).singleton(),
+	whatsappNotifier: asClass(WhatsappNotifier).singleton(),
 
 	// db services
 	channelTypeService: asClass(ChannelTypeService).singleton(),

@@ -61,4 +61,20 @@ export class WhatsappKeyService extends BaseDbService {
 				),
 			);
 	}
+
+	async saveOrUpdate({ data }) {
+		// eslint-disable-next-line no-unused-vars
+		const { id, ...updateData } = data;
+
+		const rows = await this._dbClient
+			.insert(this._table)
+			.values(data)
+			.onConflictDoUpdate({
+				target: [this._table.credId, this._table.keyType, this._table.keyId],
+				set: updateData,
+			})
+			.returning();
+
+		return rows[0];
+	}
 }

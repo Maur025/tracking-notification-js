@@ -1,5 +1,6 @@
 import { companiesTable } from "../company/company.schema.js";
 import { BaseDbService } from "../db/base-db-service.js";
+import { channelAssignWpCredsTable } from "./channel-assign-wp-cred.schema.js";
 import { channelTypesTable } from "./channel-type.schema.js";
 import { channelsTable } from "./channel.schema.js";
 
@@ -15,7 +16,7 @@ export class ChannelService extends BaseDbService {
 			drizzleOrm,
 			table: channelsTable,
 			tableName: "channelsTable",
-			withData: { channelType: true, company: false },
+			withData: { channelType: true, company: false, whatsappCreds: true },
 		});
 	}
 
@@ -27,9 +28,10 @@ export class ChannelService extends BaseDbService {
 				channelTypesTable,
 				this._drizzleOrm.eq(this._table.channelTypeId, channelTypesTable.id),
 			)
+			.leftJoin(companiesTable, this._drizzleOrm.eq(this._table.companyId, companiesTable.id))
 			.leftJoin(
-				companiesTable,
-				this._drizzleOrm.eq(this._table.companyId, companiesTable.id),
+				channelAssignWpCredsTable,
+				this._drizzleOrm.eq(this._table.id, channelAssignWpCredsTable.channelId),
 			);
 
 		const andConditions = [];
@@ -58,10 +60,13 @@ export class ChannelService extends BaseDbService {
 			return null;
 		}
 
+		console.log(result);
+
 		return {
 			...result.channels,
 			channelType: result.channel_types,
 			company: result.companies,
+			whatsappCreds: [result.channel_assign_wp_creds],
 		};
 	}
 
