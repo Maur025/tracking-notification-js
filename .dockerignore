@@ -1,0 +1,17 @@
+node_modules
+.pnpm-store
+dist
+build
+.git
+.env
+.vscode
+.github
+container
+test
+whatsapp_session
+.prettierrc
+drizzle.config.js
+eslint.config.js
+generate-docker-image.sh
+jsconfig.json
+vitest.config.js
