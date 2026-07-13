@@ -22,8 +22,6 @@ export class WhatsappNotifier extends Notifier {
 			channelReferenceId: channelId,
 		});
 
-		console.log(whatsappChannelData);
-
 		if (
 			!whatsappChannelData ||
 			!whatsappChannelData.whatsappCreds ||
@@ -39,23 +37,11 @@ export class WhatsappNotifier extends Notifier {
 			credId: whatsappChannelData.whatsappCreds[0].whatsappCredId,
 		});
 
-		let isConnected = whatsappChannel.getStatus();
-
-		// while (!isConnected) {
-		// 	console.info({ isConnected });
-
-		// 	await setDelay(1000);
-
-		// 	isConnected = whatsappChannel.getStatus();
-		// }
-
-		console.log({ isConnected });
-
-		console.log(
-			`[WHATSAPP-NOTIFICATION] Sending whatsapp notification to ${toList.length} recipients...`,
-		);
-
 		for (const to of toList) {
+			if (!to || to.trim() === "") {
+				continue;
+			}
+
 			const noise = Math.floor(Math.random() * 300 + 50);
 
 			const jid = `${to}@s.whatsapp.net`;
