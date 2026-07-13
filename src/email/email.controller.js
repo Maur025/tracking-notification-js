@@ -6,13 +6,18 @@ export class EmailController {
 	#resource = "emails";
 	#emailService;
 
+	/**
+	 *
+	 * @param {object} request
+	 * @param {import('./email.service.js').EmailService} request.emailService
+	 */
 	constructor({ emailService }) {
 		this.#emailService = emailService;
 	}
 
 	registerRoutes(app) {
-		app.post(`/${this.#resource}/queue`, this.#handlePostQueue.bind(this));
-		app.get(`/${this.#resource}/queue`, this.#handleGetQueue.bind(this));
+		app.post(`/${this.#resource}/queue`, (req, res) => this.#handlePostQueue(req, res));
+		app.get(`/${this.#resource}/queue`, (req, res) => this.#handleGetQueue(req, res));
 	}
 
 	async #handlePostQueue(req, res) {

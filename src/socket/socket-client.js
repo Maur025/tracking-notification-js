@@ -28,6 +28,7 @@ export class SocketClient {
 				portWs: String(this.#environment.APP_PORT),
 				portHttp: String(this.#environment.APP_PORT),
 			},
+			reconnect: true,
 		});
 
 		this.#socketEventListener();

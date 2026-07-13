@@ -7,5 +7,16 @@ export const relations = defineRelations(schema, (rel) => ({
 			from: rel.channelsTable.channelTypeId,
 			to: rel.channelTypesTable.id,
 		}),
+		whatsappCreds: rel.many.channelAssignWpCredsTable(),
+	},
+	channelAssignWpCredsTable: {
+		channel: rel.one.channelsTable({
+			from: rel.channelAssignWpCredsTable.channelId,
+			to: rel.channelsTable.id,
+		}),
+		whatsappCred: rel.one.whatsappCredsTable({
+			from: rel.channelAssignWpCredsTable.whatsappCredId,
+			to: rel.whatsappCredsTable.id,
+		}),
 	},
 }));

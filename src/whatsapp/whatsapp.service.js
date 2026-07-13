@@ -1,16 +1,16 @@
 import { workerJobNames } from "../worker-job-name.js";
 
-export class EmailService {
+export class WhatsappService {
 	#CHUNK_SIZE;
-	#emailQueue;
+	#whatsappQueue;
 
 	/**
 	 * @param {object} request
-	 * @param {import('./email-queue.js').EmailQueue} request.emailQueue
+	 * @param {import('./whatsapp-queue.js').WhatsappQueue} request.whatsappQueue
 	 */
-	constructor({ emailQueue }) {
-		this.#CHUNK_SIZE = 25;
-		this.#emailQueue = emailQueue;
+	constructor({ whatsappQueue }) {
+		this.#CHUNK_SIZE = 10;
+		this.#whatsappQueue = whatsappQueue;
 	}
 
 	async assignAndDistributeJobs({ requestData }) {
@@ -23,13 +23,11 @@ export class EmailService {
 
 			const channelIndex = indexChunk % requestData.channelIds.length;
 
-			const newJobResponse = await this.#emailQueue.addToQueue(
-				workerJobNames.EMAIL_SEND_NOTIFICATION,
+			const newJobResponse = await this.#whatsappQueue.addToQueue(
+				workerJobNames.WHATSAPP_SEND_NOTIFICATION,
 				{
 					toList: chunk,
 					channelId: requestData.channelIds[channelIndex],
-					companyId: requestData.companyId,
-					subject: requestData.subject,
 					message: requestData.message,
 				},
 			);

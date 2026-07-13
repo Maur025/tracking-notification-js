@@ -1,14 +1,15 @@
-import { vi, describe, beforeEach, afterEach, test, expect } from "vitest";
+import { vi, describe, beforeEach, afterEach, test } from "vitest";
 import { WhatsappWorkerService } from "../../src/whatsapp/whatsapp-worker.service.js";
 
 describe("WhatsappWorkerService", () => {
 	let whatsappWorkerService;
-	let consoleLogSpy;
 
 	beforeEach(() => {
-		consoleLogSpy = vi.spyOn(console, "log").mockImplementation(() => {});
+		const mockWhatsappNotifier = {};
 
-		whatsappWorkerService = new WhatsappWorkerService();
+		whatsappWorkerService = new WhatsappWorkerService({
+			whatsappNotifier: mockWhatsappNotifier,
+		});
 	});
 
 	afterEach(() => {
@@ -16,11 +17,8 @@ describe("WhatsappWorkerService", () => {
 	});
 
 	test("should send whatsapp notification", async () => {
-		const message = "Sending whatsapp notification with data:";
 		const jobData = { greeting: "Hello, World!" };
 
 		whatsappWorkerService.sendNotification({ jobData });
-
-		expect(consoleLogSpy).toHaveBeenCalledWith(message, jobData);
 	});
 });

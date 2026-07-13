@@ -37,6 +37,15 @@ import { SocketServerHandler } from "./socket/socket-server-handler.js";
 import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
 import { SocketClientHandler } from "./socket/socket-client-handler.js";
 import { RegisterChannelOfDbConfigAction } from "./channel/action/register-channel-of-db-config.action.js";
+import { WhatsappCredService } from "./whatsapp/services/whatsapp-cred.service.js";
+import { WhatsappKeyService } from "./whatsapp/services/whatsapp-key.service.js";
+import { WhatsappAuthManager } from "./whatsapp/whatsapp-auth-manager.js";
+import { WhatsappAuthentication } from "./whatsapp/whatsapp-authentication.js";
+import { ChannelAssignWpCredService } from "./channel/channel-assign-wp-cred.service.js";
+import { WhatsappCredChannelCreateAction } from "./whatsapp/action/whatsapp-cred-channel-create.action.js";
+import { WhatsappService } from "./whatsapp/whatsapp.service.js";
+import { WhatsappNotifier } from "./whatsapp/whatsapp-notifier.js";
+import { WhatsappProvider } from "./whatsapp/whatsapp-provider.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -103,24 +112,35 @@ iocContainer.register({
 	// providers
 	databaseProvider: asClass(DatabaseProvider).singleton(),
 	emailProvider: asClass(EmailProvider).singleton(),
+	whatsappProvider: asClass(WhatsappProvider).singleton(),
 
 	// notifiers
 	emailNotifier: asClass(EmailNotifier).singleton(),
+	whatsappNotifier: asClass(WhatsappNotifier).singleton(),
 
 	// db services
 	channelTypeService: asClass(ChannelTypeService).singleton(),
 	companyService: asClass(CompanyService).singleton(),
 	channelService: asClass(ChannelService).singleton(),
 	databaseConfigurationService: asClass(DatabaseConfigurationService).singleton(),
+	whatsappCredService: asClass(WhatsappCredService).singleton(),
+	whatsappKeyService: asClass(WhatsappKeyService).singleton(),
+	channelAssignWpCredService: asClass(ChannelAssignWpCredService).singleton(),
 
 	// db seeders
 	dbSeed: asClass(DbSeed).singleton(),
 
 	// controller services
 	emailService: asClass(EmailService).singleton(),
+	whatsappService: asClass(WhatsappService).singleton(),
 
 	// actions
 	registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
+	whatsappCredChannelCreateAction: asClass(WhatsappCredChannelCreateAction).singleton(),
+
+	// whatsapp authentication
+	whatsappAuthManager: asClass(WhatsappAuthManager).singleton(),
+	whatsappAuthentication: asClass(WhatsappAuthentication).singleton(),
 });
 
 export { iocContainer };
