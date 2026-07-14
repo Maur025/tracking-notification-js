@@ -18,10 +18,10 @@ COPY --from=common-prepare /tracking-common .
 
 WORKDIR /app
 
-COPY tracking-notification/package.json tracking-notification/pnpm-lock.yaml tracking-notification/pnpm-workspace.yaml ./
+COPY tracking-notification-js/package.json tracking-notification-js/pnpm-lock.yaml tracking-notification-js/pnpm-workspace.yaml ./
 
 RUN pnpm install --frozen-lockfile
-COPY tracking-notification/ .
+COPY tracking-notification-js/ .
 
 FROM node:24.16.0-alpine AS runner
 
