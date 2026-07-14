@@ -1,11 +1,18 @@
 export class RedisApp {
 	#ioredis;
 	#environments;
+	#containerAdapter;
 
 	#redisConnection;
-
-	constructor({ ioredis, environments }) {
+	/**
+	 * @param {object} request
+	 * @param {typeof import("ioredis")} request.ioredis
+	 * @param {import('../container-adapter.js').ContainerAdapter} request.containerAdapter
+	 * @param {object} request.environments
+	 */
+	constructor({ ioredis, containerAdapter, environments }) {
 		this.#ioredis = ioredis;
+		this.#containerAdapter = containerAdapter;
 		this.#environments = environments;
 	}
 
@@ -19,6 +26,8 @@ export class RedisApp {
 		console.info(
 			`[IOREDIS] create Redis connection to ${this.#environments.REDIS_HOST}:${this.#environments.REDIS_PORT}`,
 		);
+
+		this.#containerAdapter.registerValue("redisConnection", this.#redisConnection);
 	}
 
 	getRedisConnection() {

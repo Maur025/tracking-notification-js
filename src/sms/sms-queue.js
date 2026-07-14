@@ -4,9 +4,16 @@ export class SmsQueue {
 	#bullmq;
 	#smsQueue;
 
-	constructor({ bullmq }) {
+	/**
+	 * @param {object} request
+	 * @param {typeof import("bullmq")} request.bullmq
+	 * @param {typeof import("ioredis").Redis} request.redisConnection
+	 */
+	constructor({ bullmq, redisConnection }) {
 		this.#bullmq = bullmq;
-		this.#smsQueue = new this.#bullmq.Queue(workerTopic.SMS);
+		this.#smsQueue = new this.#bullmq.Queue(workerTopic.SMS, {
+			connection: redisConnection,
+		});
 	}
 
 	getQueue() {

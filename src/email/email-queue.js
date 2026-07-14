@@ -4,9 +4,16 @@ export class EmailQueue {
 	#bullmq;
 	#emailQueue;
 
-	constructor({ bullmq }) {
+	/**
+	 * @param {object} request
+	 * @param {typeof import("bullmq")} request.bullmq
+	 * @param {typeof import("ioredis").Redis} request.redisConnection
+	 */
+	constructor({ bullmq, redisConnection }) {
 		this.#bullmq = bullmq;
-		this.#emailQueue = new this.#bullmq.Queue(workerTopic.EMAIL);
+		this.#emailQueue = new this.#bullmq.Queue(workerTopic.EMAIL, {
+			connection: redisConnection,
+		});
 	}
 
 	getQueue() {

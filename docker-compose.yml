@@ -1,32 +1,36 @@
 services:
-  # redis:
-  #   image: redis/redis-stack:latest
-  #   container_name: redis
-  #   ports:
-  #     - "6379:6379"
-  #     - "8001:8001"
-  #   # command: ["redis-server"] --> for run container with custom params
-  #   healthcheck:
-  #     test: ["CMD", "redis-cli", "ping"]
-  #     interval: 10s
-  #     timeout: 5s
-  #     retries: 3
-  #   volumes:
-  #     - redis_data:/data
-  #   networks:
-  #     - compose-net
-  #   restart: unless-stopped
+  redis:
+    image: redis/redis-stack:latest
+    container_name: redis
+    hostname: redis
+    ports:
+      - "6379:6379"
+      - "8001:8001"
+    # command: ["redis-server"] --> for run container with custom params
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    volumes:
+      - redis_data:/data
+    networks:
+      - compose-net
+    restart: unless-stopped
   tracking-notification-js-container:
-    image: tracking-notification-js:0.0.1
+    image: maur025/tracking-notification-js:0.0.1
     container_name: tracking-notification-js-container
+    hostname: tracking-notification-js-container
     ports:
       - "8801:8801"
     env_file:
-      - .env
+      - ./.env
     volumes:
       - notification_data:/app/database
     networks:
       - compose-net
+    depends_on:
+      - redis
 
 volumes:
   redis_data:

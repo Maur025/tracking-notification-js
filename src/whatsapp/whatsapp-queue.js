@@ -4,9 +4,16 @@ export class WhatsappQueue {
 	#bullmq;
 	#whatsappQueue;
 
-	constructor({ bullmq }) {
+	/**
+	 * @param {object} request
+	 * @param {typeof import("bullmq")} request.bullmq
+	 * @param {typeof import("ioredis").Redis} request.redisConnection
+	 */
+	constructor({ bullmq, redisConnection }) {
 		this.#bullmq = bullmq;
-		this.#whatsappQueue = new this.#bullmq.Queue(workerTopic.WHATSAPP);
+		this.#whatsappQueue = new this.#bullmq.Queue(workerTopic.WHATSAPP, {
+			connection: redisConnection,
+		});
 	}
 
 	getQueue() {
