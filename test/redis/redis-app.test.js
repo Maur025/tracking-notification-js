@@ -7,6 +7,9 @@ describe("Redis App", () => {
 	let redisApp;
 	let consoleInfoSpy;
 
+	/** @type {import('vitest').Mock} */
+	let mockRegisterValue;
+
 	beforeEach(() => {
 		consoleInfoSpy = vi.spyOn(console, "info").mockImplementation(() => {});
 		class MockRedis {
@@ -23,7 +26,14 @@ describe("Redis App", () => {
 			REDIS_PORT: 6379,
 		};
 
-		redisApp = new RedisApp({ ioredis: mockIoRedis, environments: mockEnvironments });
+		mockRegisterValue = vi.fn();
+		const mockContainerAdapter = { registerValue: mockRegisterValue };
+
+		redisApp = new RedisApp({
+			ioredis: mockIoRedis,
+			environments: mockEnvironments,
+			containerAdapter: mockContainerAdapter,
+		});
 	});
 
 	afterEach(() => {
