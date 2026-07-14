@@ -46,6 +46,7 @@ import { WhatsappCredChannelCreateAction } from "./whatsapp/action/whatsapp-cred
 import { WhatsappService } from "./whatsapp/whatsapp.service.js";
 import { WhatsappNotifier } from "./whatsapp/whatsapp-notifier.js";
 import { WhatsappProvider } from "./whatsapp/whatsapp-provider.js";
+import { ChannelController } from "./channel/channel.controller.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -103,6 +104,7 @@ iocContainer.register({
 	whatsappController: asClass(WhatsappController).singleton(),
 	emailController: asClass(EmailController).singleton(),
 	smsController: asClass(SmsController).singleton(),
+	channelController: asClass(ChannelController).singleton(),
 	controllers: asFunction(function () {
 		const containerInstance = iocContainer;
 
