@@ -1,6 +1,7 @@
 const {
-	APP_PORT = 8801,
+	APP_PORT = "8801",
 	APP_STATIC_PUBLIC_PATH = "./public",
+	WS_PORT = "8851",
 
 	REDIS_HOST = "localhost",
 	REDIS_PORT = "6379",
@@ -17,6 +18,7 @@ const {
 export const environments = {
 	APP_PORT: Number(APP_PORT),
 	APP_STATIC_PUBLIC_PATH,
+	WS_PORT: Number(WS_PORT),
 	REDIS_HOST,
 	REDIS_PORT: Number(REDIS_PORT),
 	WHATSAPP_BROWSER_LIFETIME_MINUTES: Number(WHATSAPP_BROWSER_LIFETIME_MINUTES),
