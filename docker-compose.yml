@@ -26,7 +26,8 @@ services:
     env_file:
       - ./.env
     volumes:
-      - notification_data:/app/database
+      # - notification_data:/app/database
+      - ./database:/app/database
     networks:
       - compose-net
     depends_on:

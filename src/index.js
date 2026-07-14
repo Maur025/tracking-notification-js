@@ -1,8 +1,11 @@
 import "dotenv/config";
 import { logger } from "./common/logger.js";
 import { iocContainer } from "./ioc-container.js";
+import { Scheduler } from "./common/scheduler.cjs";
+import { NodeControllerServer } from "tracking-common";
 
 async function bootstrap() {
+	const environment = iocContainer.resolve("environments");
 	const databaseProvider = iocContainer.resolve("databaseProvider");
 	const redisApp = iocContainer.resolve("redisApp");
 
@@ -18,8 +21,19 @@ async function bootstrap() {
 		const serverApp = iocContainer.resolve("serverApp");
 		const socketServer = iocContainer.resolve("socketServer");
 
+		const scheduler = new Scheduler();
+		scheduler.start();
+		await setupScheduler(scheduler);
+
 		socketClient.initialize();
 		socketClient.clientStart();
+
+		const wsServerOutput = new NodeControllerServer({
+			port: environment.WS_PORT,
+			prefix: "ws-processor-output",
+		});
+		wsServerOutput.start();
+		await setupOutput(wsServerOutput);
 
 		emailWorker.initialize(redisApp.getRedisConnection());
 		whatsappWorker.initialize(redisApp.getRedisConnection());
@@ -42,5 +56,21 @@ async function bootstrap() {
 		process.exit(1);
 	}
 }
+
+const setupOutput = async (wsServerOutput) => {
+	wsServerOutput.wsServerManager.on("connected", (client, data) => {
+		console.error("wsServerOutput.wsServerManager on connected", data);
+		client.socket.emit("devices", []);
+	});
+};
+
+/** @param {Scheduler} scheduler*/
+const setupScheduler = async (scheduler) => {
+	scheduler.on("time.ping", () => {});
+	scheduler.on("time.save", () => {
+		console.log("saving");
+	});
+	scheduler.on("time.storage", () => {});
+};
 
 bootstrap();
