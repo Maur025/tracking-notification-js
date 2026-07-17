@@ -39,7 +39,7 @@ export class EmailNotifier extends Notifier {
 		});
 
 		try {
-			emailChannel.send({
+			await emailChannel.send({
 				from: emailChannel.getUsername(),
 				to: toList,
 				subject: subject,

@@ -5,8 +5,16 @@ export class EmailChannel {
 	#username;
 	#password;
 
+	/** @type {import('nodemailer').Transporter} */
 	#emailClient;
 
+	/**
+	 *
+	 * @param {object} request
+	 * @param {typeof import('nodemailer')} request.nodemailer
+	 * @param {object} request.connectionData
+	 * @param {object} request.credentials
+	 */
 	constructor({ nodemailer, connectionData, credentials }) {
 		this.#host = connectionData.host;
 		this.#port = connectionData.port;
@@ -48,20 +56,20 @@ export class EmailChannel {
 		return this.#username;
 	}
 
-	send(mailOptions) {
+	async send(mailOptions) {
 		try {
-			this.#emailClient.sendMail(mailOptions);
+			await this.#emailClient.sendMail(mailOptions);
 		} catch (error) {
 			console.error("[EMAIL-CHANNEL] Error sending email:", error.message);
 			throw error;
 		}
 	}
 
-	close() {
+	async close() {
 		if (!this.#emailClient) {
 			return;
 		}
 
-		this.#emailClient.close();
+		await this.#emailClient.close();
 	}
 }

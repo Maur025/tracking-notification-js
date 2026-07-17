@@ -73,4 +73,53 @@ const setupScheduler = async (scheduler) => {
 	scheduler.on("time.storage", () => {});
 };
 
+const handleShutdown = async (signal) => {
+	console.info(`Received ${signal}. Shutting down gracefully...`);
+
+	try {
+		/** @type {import('./email/email-worker.js').EmailWorker} */
+		const emailWorker = iocContainer.resolve("emailWorker");
+		await emailWorker.close();
+
+		/** @type {import('./whatsapp/whatsapp-worker.js').WhatsappWorker} */
+		const whatsappWorker = iocContainer.resolve("whatsappWorker");
+		await whatsappWorker.close();
+
+		/** @type {import('./whatsapp/whatsapp-provider.js').WhatsappProvider} */
+		const whatsappProvider = iocContainer.resolve("whatsappProvider");
+		await whatsappProvider.disconnectAllChannels();
+
+		/** @type {import('./email/email-provider.js').EmailProvider} */
+		const emailProvider = iocContainer.resolve("emailProvider");
+		await emailProvider.disconnectAllChannels();
+
+		/** @type {import('./redis/redis-app.js').RedisApp} */
+		const redisApp = iocContainer.resolve("redisApp");
+		await redisApp.close();
+
+		/** @type {import('./db/database-provider.js').DatabaseProvider} */
+		const databaseProvider = iocContainer.resolve("databaseProvider");
+		await databaseProvider.close();
+	} catch (error) {
+		logger.error("Error occurred while shutting down app:", error);
+	} finally {
+		console.info("Shutdown complete. Exiting process.");
+		process.exit(0);
+	}
+};
+
 bootstrap();
+
+process.on("SIGINT", () => handleShutdown("SIGINT"));
+
+process.on("SIGTERM", () => handleShutdown("SIGTERM"));
+
+process.on("uncaughtException", (error) => {
+	logger.error("Uncaught Exception:", error);
+	handleShutdown("uncaughtException");
+});
+
+process.on("unhandledRejection", (reason, promise) => {
+	logger.error("Unhandled Rejection at:", promise, "reason:", reason);
+	handleShutdown("unhandledRejection");
+});
