@@ -15,6 +15,8 @@ describe("EmailWorker", () => {
 	const emailWorkerServiceMock = {};
 	const redisConnectionMock = {};
 
+	const mockEnvironments = {};
+
 	beforeEach(() => {
 		mockWorkerOn = vi.fn();
 		class MockWorker {
@@ -36,6 +38,7 @@ describe("EmailWorker", () => {
 			bullmq: mockBullmq,
 			containerAdapter: mockContainerAdapter,
 			emailWorkerService: emailWorkerServiceMock,
+			environments: mockEnvironments,
 		});
 	});
 

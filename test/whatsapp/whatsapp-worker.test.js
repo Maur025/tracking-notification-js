@@ -14,6 +14,7 @@ describe("WhatsappWorker", () => {
 
 	const whatsappWorkerServiceMock = {};
 	const redisConnectionMock = {};
+	const mockEnvironments = {};
 
 	beforeEach(() => {
 		mockWorkerOn = vi.fn();
@@ -36,6 +37,7 @@ describe("WhatsappWorker", () => {
 			bullmq: mockBullmq,
 			containerAdapter: mockContainerAdapter,
 			whatsappWorkerService: whatsappWorkerServiceMock,
+			environments: mockEnvironments,
 		});
 	});
 
