@@ -2,8 +2,14 @@ import { EmailChannel } from "./email-channel.js";
 
 export class EmailProvider {
 	#nodemailer;
+
+	/** @type {Map<string, import('./email-channel.js').EmailChannel>} */
 	#emailChannels;
 
+	/**
+	 * @param {object} request
+	 * @param {typeof import('nodemailer')} request.nodemailer
+	 */
 	constructor({ nodemailer }) {
 		this.#nodemailer = nodemailer;
 		this.#emailChannels = new Map();
@@ -25,5 +31,17 @@ export class EmailProvider {
 		}
 
 		return this.#emailChannels.get(uniqueIdentifier);
+	}
+
+	async disconnectAllChannels() {
+		if (this.#emailChannels.size <= 0) {
+			return;
+		}
+
+		for (const emailChannel of this.#emailChannels.values()) {
+			await emailChannel.close();
+		}
+
+		console.info("[Email-Provider] All Email channels disconnected.");
 	}
 }

@@ -6,11 +6,11 @@ import { relations } from "./relation.js";
 
 export class DatabaseProvider {
 	#containerAdapter;
+	/** @type {ReturnType<typeof drizzle>} */
 	#dbClient;
 	#environment;
 
 	/**
-	 *
 	 * @param {object} request
 	 * @param {import("../ioc-container.js").ContainerAdapter} request.containerAdapter
 	 * @param {import("../environment/environment.js").Environment} request.environments
@@ -40,6 +40,13 @@ export class DatabaseProvider {
 		await migrate(this.#dbClient, {
 			migrationsFolder: path.resolve(process.cwd(), "./drizzle"),
 		});
+	}
+
+	async close() {
+		if (this.#dbClient?.$client) {
+			await this.#dbClient.$client.close();
+			console.info("[DB] Database connection closed");
+		}
 	}
 
 	getDbClient() {

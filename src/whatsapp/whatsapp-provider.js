@@ -19,4 +19,16 @@ export class WhatsappProvider {
 
 		return this.#whatsappChannels.get(credId);
 	}
+
+	async disconnectAllChannels() {
+		if (this.#whatsappChannels.size <= 0) {
+			return;
+		}
+
+		for (const whatsappChannel of this.#whatsappChannels.values()) {
+			await whatsappChannel.close();
+		}
+
+		console.info("[WP-Provider] All WhatsApp channels disconnected.");
+	}
 }

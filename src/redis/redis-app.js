@@ -3,7 +3,9 @@ export class RedisApp {
 	#environments;
 	#containerAdapter;
 
+	/** @type {import('ioredis').Redis} */
 	#redisConnection;
+
 	/**
 	 * @param {object} request
 	 * @param {typeof import("ioredis")} request.ioredis
@@ -28,6 +30,13 @@ export class RedisApp {
 		);
 
 		this.#containerAdapter.registerValue("redisConnection", this.#redisConnection);
+	}
+
+	async close() {
+		if (this.#redisConnection) {
+			await this.#redisConnection.quit();
+			console.info("[IOREDIS] Redis connection closed");
+		}
 	}
 
 	getRedisConnection() {

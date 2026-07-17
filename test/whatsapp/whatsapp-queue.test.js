@@ -8,6 +8,11 @@ describe("WhatsappQueue", () => {
 	let mockBullmq;
 	let mockQueueAdd;
 
+	const mockEnvironments = {
+		WP_QUEUE_ATTEMPTS: 3,
+		WP_QUEUE_BACKOFF_DELAY: 5000,
+	};
+
 	beforeEach(() => {
 		mockQueueAdd = vi.fn();
 
@@ -21,7 +26,7 @@ describe("WhatsappQueue", () => {
 			Queue: MockQueue,
 		};
 
-		whatsappQueue = new WhatsappQueue({ bullmq: mockBullmq });
+		whatsappQueue = new WhatsappQueue({ bullmq: mockBullmq, environments: mockEnvironments });
 	});
 
 	afterEach(() => {
@@ -57,7 +62,11 @@ describe("WhatsappQueue", () => {
 			jobName,
 			payload,
 			expect.objectContaining({
-				attempts: 5,
+				attempts: mockEnvironments.WP_QUEUE_ATTEMPTS,
+				backoff: {
+					type: "exponential",
+					delay: mockEnvironments.WP_QUEUE_BACKOFF_DELAY,
+				},
 			}),
 		);
 		expect(result).toEqual(expectedQueueReturn);
