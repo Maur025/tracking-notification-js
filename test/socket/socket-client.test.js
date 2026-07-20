@@ -7,6 +7,9 @@ vi.mock("tracking-common", () => {
 	class NodeControllerClient {
 		constructor() {}
 		on = mockWsClientOn;
+		wsClientManager = {
+			on: vi.fn(),
+		};
 	}
 
 	return { NodeControllerClient };
