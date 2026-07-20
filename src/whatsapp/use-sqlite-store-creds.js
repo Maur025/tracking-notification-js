@@ -1,6 +1,8 @@
 import { initAuthCreds, proto } from "@whiskeysockets/baileys";
 import { iocContainer } from "../ioc-container.js";
 
+const MAX_PRE_KEYS_BATCH_SIZE = 100;
+
 export const useSqliteStoreCreds = async (credId) => {
 	/** @type {import('./whatsapp-auth-manager.js').WhatsappAuthManager} */
 	const whatsappAuthManager = iocContainer.resolve("whatsappAuthManager");
@@ -23,10 +25,16 @@ export const useSqliteStoreCreds = async (credId) => {
 	const get = async (type, ids) => {
 		const data = {};
 
+		let targetIds = ids;
+
+		if (type === "pre-key" && ids.length > MAX_PRE_KEYS_BATCH_SIZE) {
+			targetIds = ids.slice(0, MAX_PRE_KEYS_BATCH_SIZE);
+		}
+
 		const keyRows = await whatsappAuthManager.getKeys({
 			credId,
 			keyType: type,
-			keyIds: ids,
+			keyIds: targetIds,
 		});
 
 		for (const keyRow of keyRows) {

@@ -64,4 +64,68 @@ export class SocketClientHandler {
 
 		return dbResources;
 	}
+
+	onManagerEnterprises = async (enterprises) => {
+		console.info("[WS-CLIENT] on ManagerEnterprises");
+
+		if (!enterprises || !Array.isArray(enterprises) || enterprises.length <= 0) {
+			console.log(`[WS-CLIENT] on ManagerEnterprises: No enterprises found`);
+			return;
+		}
+
+		const enterpriseConfigMap = this.#getEnterpriseConfigMap(enterprises);
+
+		const databaseConfiguration =
+			await this.#databaseConfigurationService.findAllByReferenceIdIn({
+				referenceIds: Array.from(enterpriseConfigMap.keys()),
+			});
+
+		const dataFiltered = this.#getConfigFilter({
+			enterpriseConfigMap,
+			databaseConfiguration,
+		});
+
+		await this.#databaseConfigurationService.saveBulk(dataFiltered);
+
+		await this.#registerChannelOfDbConfigAction.execute({ configurations: dataFiltered });
+	};
+
+	#getEnterpriseConfigMap(enterprises) {
+		const enterpriseConfigs = [];
+
+		for (const enterprise of enterprises) {
+			const { server = undefined, codename, id } = enterprise.database ?? {};
+
+			if (!server || !codename || !id) {
+				continue;
+			}
+
+			const { address, apiPort } = server;
+			const enterpriseConfig = {
+				referenceId: id,
+				host: `http://${address}`,
+				port: apiPort ? String(apiPort) : null,
+				database: codename,
+			};
+
+			enterpriseConfigs.push(enterpriseConfig);
+		}
+
+		return new Map(enterpriseConfigs.map((config) => [config.referenceId, config]));
+	}
+
+	#getConfigFilter({ enterpriseConfigMap, databaseConfiguration }) {
+		const dbConfigurationMap = new Map(
+			databaseConfiguration.map((config) => [
+				`${config.referenceId}|${config.database}`,
+				config,
+			]),
+		);
+
+		const enterpriseConfigValues = Array.from(enterpriseConfigMap.values());
+
+		return enterpriseConfigValues.filter(
+			(config) => !dbConfigurationMap.has(`${config.referenceId}|${config.database}`),
+		);
+	}
 }
