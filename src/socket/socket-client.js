@@ -40,6 +40,29 @@ export class SocketClient {
 		this.#wsClient.on("devices.subscribe", (subscriptions) =>
 			this.#socketClientHandler.onDevicesSubscriptions(subscriptions),
 		);
+
+		this.#wsClient.on("", (data) => {
+			console.log({ data });
+		});
+
+		this.#wsClient.wsClientManager.on("insert", (socket, uuid, data) => {
+			console.log("[INPUTS] insert data:", data);
+			// wsUiServer.broadcast("db.insert", data);
+		});
+		this.#wsClient.wsClientManager.on("update", (socket, uuid, data) => {
+			console.log("[INPUTS] update data:", data);
+			// wsUiServer.broadcast("db.update", data);
+		});
+		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) => {
+			console.log("[INPUTS] delete data:", data);
+			// wsUiServer.broadcast("db.delete", data);
+		});
+
+		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) => {
+			console.log("wsClientGateway.wsClientManager enterprises", _enterprises);
+			// enterprises = _enterprises;
+			//wsClientGateway.wsClientManager.socket.emit("processor.all",backends);
+		});
 	}
 
 	clientStart() {
