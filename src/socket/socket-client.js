@@ -55,14 +55,11 @@ export class SocketClient {
 		});
 		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) => {
 			console.log("[INPUTS] delete data:", data);
-			// wsUiServer.broadcast("db.delete", data);
 		});
 
-		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) => {
-			console.log("wsClientGateway.wsClientManager enterprises", _enterprises);
-			// enterprises = _enterprises;
-			//wsClientGateway.wsClientManager.socket.emit("processor.all",backends);
-		});
+		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) =>
+			this.#socketClientHandler.onManagerEnterprises(_enterprises),
+		);
 	}
 
 	clientStart() {
