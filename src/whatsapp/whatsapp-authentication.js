@@ -37,20 +37,3 @@ export class WhatsappAuthentication {
 		});
 	}
 }
-
-// onlyRegister: true,
-// onSuccess: async ({ phoneNumber }) => {
-// 	try {
-// 		await this.#whatsappCredService.updateById({
-// 			id: credId,
-// 			data: {
-// 				phoneNumberIdentifier: phoneNumber,
-// 			},
-// 		});
-// 	} catch (error) {
-// 		logger.error(
-// 			`Error saving WhatsApp credentials for channel ${channelId}:`,
-// 			error.message,
-// 		);
-// 	}
-// },

@@ -46,9 +46,9 @@ export class WhatsappNotifier extends Notifier {
 
 			const jid = `${to}@s.whatsapp.net`;
 
-			await whatsappChannel.send({ jid, message });
+			await whatsappChannel.send({ jid, content: { text: message } });
 
-			await setDelay(2000 + noise);
+			await setDelay(1000 + noise);
 		}
 	}
 }
