@@ -38,9 +38,16 @@ describe("DatabaseProvider", () => {
 	});
 
 	test("should initialize db instance", async () => {
-		drizzle.mockReturnValue({});
+		drizzle.mockReturnValue({
+			$client: {
+				execute: vi.fn(),
+			},
+		});
 
 		await databaseProvider.initialize();
+
+		const dbClient = databaseProvider.getDbClient();
+		console.log(dbClient);
 
 		expect(drizzle).toHaveBeenCalledWith(
 			expect.objectContaining({
