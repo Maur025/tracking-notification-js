@@ -2,6 +2,7 @@ import makeWASocket, { DisconnectReason } from "@whiskeysockets/baileys";
 import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 import QRCode from "qrcode";
 import { logger } from "../common/logger.js";
+import { setDelay } from "../common/set-delay.js";
 
 export class WhatsappChannel {
 	/** @type {ReturnType<typeof makeWASocket>} */
@@ -13,8 +14,12 @@ export class WhatsappChannel {
 	/** @type {boolean} */
 	#isExpectedClose = false;
 
-	constructor() {
+	#environment;
+	#MAX_RETRIES = 3;
+
+	constructor({ environment }) {
 		this.#isConnected = false;
+		this.#environment = environment;
 	}
 
 	async initialize({ credId }) {
@@ -28,9 +33,38 @@ export class WhatsappChannel {
 
 		const { state, saveCreds } = await useSqliteStoreCreds(this.#credId);
 
-		this.#wpSock = makeWASocket({ auth: state });
+		this.#wpSock = makeWASocket({
+			auth: state,
+			fireInitQueries: false,
+			defaultQueryTimeoutMs: this.#environment.WP_CH_DEFAULT_QUERY_TIMEOUT_MS,
+			connectTimeoutMs: this.#environment.WP_CH_CONNECT_TIMEOUT_MS,
+			keepAliveIntervalMs: this.#environment.WP_CH_KEEP_ALIVE_INTERVAL_MS,
+			syncFullHistory: false,
+		});
 
-		this.#wpSock.ev.on("creds.update", saveCreds);
+		this.#wpSock.ev.on("creds.update", async (creds) => {
+			let attempt = 0;
+
+			while (attempt < this.#MAX_RETRIES) {
+				try {
+					await saveCreds(creds);
+					return;
+				} catch (error) {
+					attempt++;
+					console.warn(
+						`[WP-CHANNEL] Attempt ${attempt} to save credentials failed for wp: ${this.#credId}. Retrying...`,
+					);
+
+					if (attempt >= this.#MAX_RETRIES) {
+						logger.error("Error saving credentials", error);
+						this.close();
+						return;
+					}
+
+					await setDelay(500 * attempt);
+				}
+			}
+		});
 
 		this.#wpSock.ev.on(
 			"connection.update",
@@ -141,10 +175,19 @@ export class WhatsappChannel {
 			return;
 		}
 
-		this.#isExpectedClose = true;
+		try {
+			this.#isExpectedClose = true;
 
-		await this.#wpSock.end();
-		console.info(`[WP-CHANNEL] Connection closed for wp: ${this.#credId}`);
+			this.#wpSock.ev.removeAllListeners("creds.update");
+			this.#wpSock.ev.removeAllListeners("connection.update");
+
+			await this.#wpSock.end(new Error("Credential update or channel closed by user"));
+			console.info(`[WP-CHANNEL] Connection closed for wp: ${this.#credId}`);
+		} catch (error) {
+			logger.error("Error closing whatsapp connection", error.message);
+		} finally {
+			this.#wpSock = null;
+		}
 	}
 
 	getStatus() {

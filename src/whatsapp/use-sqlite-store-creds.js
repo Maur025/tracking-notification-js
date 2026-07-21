@@ -23,18 +23,17 @@ export const useSqliteStoreCreds = async (credId) => {
 	};
 
 	const get = async (type, ids) => {
+		const requestIds =
+			type === "pre-key" && ids.length > MAX_PRE_KEYS_BATCH_SIZE
+				? ids.slice(0, MAX_PRE_KEYS_BATCH_SIZE)
+				: ids;
+
 		const data = {};
-
-		let targetIds = ids;
-
-		if (type === "pre-key" && ids.length > MAX_PRE_KEYS_BATCH_SIZE) {
-			targetIds = ids.slice(0, MAX_PRE_KEYS_BATCH_SIZE);
-		}
 
 		const keyRows = await whatsappAuthManager.getKeys({
 			credId,
 			keyType: type,
-			keyIds: targetIds,
+			keyIds: requestIds,
 		});
 
 		for (const keyRow of keyRows) {

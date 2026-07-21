@@ -3,13 +3,15 @@ import { WhatsappChannel } from "./whatsapp-channel.js";
 
 export class WhatsappAuthentication {
 	#channelAssignWpCredService;
+	#environment;
 
 	/**
 	 * @param {object} request
 	 * @param {import("../channel/channel-assign-wp-cred.service.js").ChannelAssignWpCredService} request.channelAssignWpCredService
 	 */
-	constructor({ channelAssignWpCredService }) {
+	constructor({ channelAssignWpCredService, environments }) {
 		this.#channelAssignWpCredService = channelAssignWpCredService;
+		this.#environment = environments;
 	}
 
 	async requestNewAuthentication({ channelId }) {
@@ -21,7 +23,7 @@ export class WhatsappAuthentication {
 
 		const credId = uuidv4();
 
-		const whatsappChannel = new WhatsappChannel();
+		const whatsappChannel = new WhatsappChannel({ environment: this.#environment });
 
 		await whatsappChannel.initialize({
 			credId,
