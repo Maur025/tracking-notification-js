@@ -46,9 +46,6 @@ describe("DatabaseProvider", () => {
 
 		await databaseProvider.initialize();
 
-		const dbClient = databaseProvider.getDbClient();
-		console.log(dbClient);
-
 		expect(drizzle).toHaveBeenCalledWith(
 			expect.objectContaining({
 				connection: {
