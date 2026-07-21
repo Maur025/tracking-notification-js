@@ -4,13 +4,16 @@ export class WhatsappProvider {
 	/** @type {Map<string, import('./whatsapp-channel.js').WhatsappChannel>} */
 	#whatsappChannels;
 
-	constructor() {
+	#environment;
+
+	constructor({ environments }) {
+		this.#environment = environments;
 		this.#whatsappChannels = new Map();
 	}
 
 	async getWhatsappChannel({ credId }) {
 		if (!this.#whatsappChannels.has(credId)) {
-			const whatsappChannel = new WhatsappChannel();
+			const whatsappChannel = new WhatsappChannel({ environment: this.#environment });
 
 			await whatsappChannel.initialize({ credId });
 

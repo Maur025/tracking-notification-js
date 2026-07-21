@@ -3,12 +3,14 @@ import { migrate } from "drizzle-orm/libsql/migrator";
 import { existsSync, mkdirSync } from "node:fs";
 import path from "node:path";
 import { relations } from "./relation.js";
+import { getMillisecondsOfMinutes } from "../common/get-milliseconds-of-minutes.js";
 
 export class DatabaseProvider {
 	#containerAdapter;
 	/** @type {ReturnType<typeof drizzle>} */
 	#dbClient;
 	#environment;
+	#checkpointInterval;
 
 	/**
 	 * @param {object} request
@@ -36,6 +38,8 @@ export class DatabaseProvider {
 		});
 
 		await this.#dbClient.$client.execute("PRAGMA journal_mode = WAL;");
+		await this.#dbClient.$client.execute("PRAGMA temp_store = MEMORY;");
+		await this.#dbClient.$client.execute("PRAGMA wal_autocheckpoint = 5000;");
 		await this.#dbClient.$client.execute("PRAGMA busy_timeout = 5000;");
 		await this.#dbClient.$client.execute("PRAGMA synchronous = NORMAL;");
 
@@ -44,12 +48,30 @@ export class DatabaseProvider {
 		await migrate(this.#dbClient, {
 			migrationsFolder: path.resolve(process.cwd(), "./drizzle"),
 		});
+
+		this.#checkpointInterval = setInterval(async () => {
+			try {
+				await this.#dbClient.$client.execute("PRAGMA wal_checkpoint(PASSIVE);");
+			} catch (error) {
+				console.error("[DB] Error during WAL checkpoint:", error);
+			}
+		}, getMillisecondsOfMinutes(this.#environment.DB_CHECKPOINT_INTERVAL_MINUTES));
 	}
 
 	async close() {
+		if (this.#checkpointInterval) {
+			clearInterval(this.#checkpointInterval);
+			this.#checkpointInterval = null;
+		}
+
 		if (this.#dbClient?.$client) {
-			await this.#dbClient.$client.close();
-			console.info("[DB] Database connection closed");
+			try {
+				await this.#dbClient.$client.execute("PRAGMA wal_checkpoint(FULL);");
+				await this.#dbClient.$client.close();
+				console.info("[DB] Database connection closed");
+			} catch (error) {
+				console.error("[DB] Error closing database connection:", error);
+			}
 		}
 	}
 

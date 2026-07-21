@@ -12,6 +12,7 @@ const {
 	UUID = "some-uuid",
 	// Cache Db sqlite
 	DB_URL = "./database/tracking-notification.db",
+	DB_CHECKPOINT_INTERVAL_MINUTES = 15,
 	// Whatsapp Worker configuration
 	WP_REMOVE_ON_COMPLETE = 1000,
 	WP_REMOVE_ON_FAIL = 2500,
@@ -22,6 +23,10 @@ const {
 	// Whatsapp Queue configuration
 	WP_QUEUE_ATTEMPTS = 6,
 	WP_QUEUE_BACKOFF_DELAY = 10000,
+	// Whatsapp Channel configuration
+	WP_CH_DEFAULT_QUERY_TIMEOUT_MS = 60000,
+	WP_CH_CONNECT_TIMEOUT_MS = 60000,
+	WP_CH_KEEP_ALIVE_INTERVAL_MS = 30000,
 	// Email Worker configuration
 	EMAIL_REMOVE_ON_COMPLETE = 1000,
 	EMAIL_REMOVE_ON_FAIL = 2000,
@@ -48,6 +53,7 @@ const {
  * @property {number} WS_GATEWAY_PORT_PROCESSOR
  * Cache Db sqlite
  * @property {string} DB_URL
+ * @property {number} DB_CHECKPOINT_INTERVAL_MINUTES
  * Whatsapp Worker configuration
  * @property {number} WP_REMOVE_ON_COMPLETE
  * @property {number} WP_REMOVE_ON_FAIL
@@ -58,6 +64,10 @@ const {
  * Whatsapp Queue configuration
  * @property {number} WP_QUEUE_ATTEMPTS
  * @property {number} WP_QUEUE_BACKOFF_DELAY
+ * Whatsapp Channel configuration
+ * @property {number} WP_CH_DEFAULT_QUERY_TIMEOUT_MS
+ * @property {number} WP_CH_CONNECT_TIMEOUT_MS
+ * @property {number} WP_CH_KEEP_ALIVE_INTERVAL_MS
  * Email Worker configuration
  * @property {number} EMAIL_REMOVE_ON_COMPLETE
  * @property {number} EMAIL_REMOVE_ON_FAIL
@@ -85,6 +95,7 @@ export const environments = {
 	UUID,
 	// Cache Db sqlite
 	DB_URL,
+	DB_CHECKPOINT_INTERVAL_MINUTES: Number(DB_CHECKPOINT_INTERVAL_MINUTES),
 	// Whatsapp Worker configuration
 	WP_REMOVE_ON_COMPLETE: Number(WP_REMOVE_ON_COMPLETE),
 	WP_REMOVE_ON_FAIL: Number(WP_REMOVE_ON_FAIL),
@@ -95,6 +106,10 @@ export const environments = {
 	// Whatsapp Queue configuration
 	WP_QUEUE_ATTEMPTS: Number(WP_QUEUE_ATTEMPTS),
 	WP_QUEUE_BACKOFF_DELAY: Number(WP_QUEUE_BACKOFF_DELAY),
+	// Whatsapp Channel configuration
+	WP_CH_DEFAULT_QUERY_TIMEOUT_MS: Number(WP_CH_DEFAULT_QUERY_TIMEOUT_MS),
+	WP_CH_CONNECT_TIMEOUT_MS: Number(WP_CH_CONNECT_TIMEOUT_MS),
+	WP_CH_KEEP_ALIVE_INTERVAL_MS: Number(WP_CH_KEEP_ALIVE_INTERVAL_MS),
 	// Email Worker configuration
 	EMAIL_REMOVE_ON_COMPLETE: Number(EMAIL_REMOVE_ON_COMPLETE),
 	EMAIL_REMOVE_ON_FAIL: Number(EMAIL_REMOVE_ON_FAIL),
