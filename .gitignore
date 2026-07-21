@@ -165,3 +165,6 @@ devices.subscriptions.json
 # baileys auth info
 auth_info_baileys/
 whatsapp_session/
+
+# database folder
+database/

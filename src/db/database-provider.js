@@ -35,6 +35,10 @@ export class DatabaseProvider {
 			relations,
 		});
 
+		await this.#dbClient.$client.execute("PRAGMA journal_mode = WAL;");
+		await this.#dbClient.$client.execute("PRAGMA busy_timeout = 5000;");
+		await this.#dbClient.$client.execute("PRAGMA synchronous = NORMAL;");
+
 		this.#containerAdapter.registerValue("dbClient", this.#dbClient);
 
 		await migrate(this.#dbClient, {

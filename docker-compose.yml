@@ -20,7 +20,7 @@ services:
       - compose-net
     restart: unless-stopped
   tracking-notification-js-container:
-    image: maur025/tracking-notification-js:0.0.2
+    image: maur025/tracking-notification-js:0.0.3
     container_name: tracking-notification-js-container
     hostname: tracking-notification-js-container
     ports:
