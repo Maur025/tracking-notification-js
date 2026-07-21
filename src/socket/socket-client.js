@@ -45,17 +45,15 @@ export class SocketClient {
 			console.log({ data });
 		});
 
-		this.#wsClient.wsClientManager.on("insert", (socket, uuid, data) => {
-			console.log("[INPUTS] insert data:", data);
-			// wsUiServer.broadcast("db.insert", data);
-		});
-		this.#wsClient.wsClientManager.on("update", (socket, uuid, data) => {
-			console.log("[INPUTS] update data:", data);
-			// wsUiServer.broadcast("db.update", data);
-		});
-		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) => {
-			console.log("[INPUTS] delete data:", data);
-		});
+		this.#wsClient.wsClientManager.on("insert", (socket, uuid, data) =>
+			this.#socketClientHandler.processEventData({ data, type: "INSERT" }),
+		);
+		this.#wsClient.wsClientManager.on("update", (socket, uuid, data) =>
+			this.#socketClientHandler.processEventData({ data, type: "UPDATE" }),
+		);
+		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) =>
+			this.#socketClientHandler.processEventData({ data, type: "DELETE" }),
+		);
 
 		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) =>
 			this.#socketClientHandler.onManagerEnterprises(_enterprises),
