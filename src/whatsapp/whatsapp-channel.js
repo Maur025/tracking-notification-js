@@ -1,4 +1,4 @@
-import makeWASocket, { DisconnectReason } from "@whiskeysockets/baileys";
+import makeWASocket, { DisconnectReason, fetchLatestBaileysVersion } from "@whiskeysockets/baileys";
 import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 import QRCode from "qrcode";
 import { logger } from "../common/logger.js";
@@ -13,6 +13,8 @@ export class WhatsappChannel {
 	#isConnected;
 	/** @type {boolean} */
 	#isExpectedClose = false;
+	/** @type {boolean} */
+	#isCleaning = false;
 
 	#environment;
 	#MAX_RETRIES = 3;
@@ -32,9 +34,11 @@ export class WhatsappChannel {
 		}
 
 		const { state, saveCreds } = await useSqliteStoreCreds(this.#credId);
+		const { version } = await fetchLatestBaileysVersion();
 
 		this.#wpSock = makeWASocket({
 			auth: state,
+			version,
 			fireInitQueries: false,
 			defaultQueryTimeoutMs: this.#environment.WP_CH_DEFAULT_QUERY_TIMEOUT_MS,
 			connectTimeoutMs: this.#environment.WP_CH_CONNECT_TIMEOUT_MS,
@@ -57,7 +61,7 @@ export class WhatsappChannel {
 
 					if (attempt >= this.#MAX_RETRIES) {
 						logger.error("Error saving credentials", error);
-						this.close();
+						await this.close();
 						return;
 					}
 
@@ -75,7 +79,7 @@ export class WhatsappChannel {
 	async #setOnConnectionUpdate({ update }) {
 		const { connection, lastDisconnect, qr } = update;
 
-		this.#connectionUpdateClose({
+		await this.#connectionUpdateClose({
 			connection,
 			lastDisconnect,
 		});
@@ -85,7 +89,7 @@ export class WhatsappChannel {
 		await this.#handleQrCode(qr);
 	}
 
-	#connectionUpdateClose({ connection, lastDisconnect }) {
+	async #connectionUpdateClose({ connection, lastDisconnect }) {
 		if (connection !== "close") {
 			return;
 		}
@@ -94,7 +98,15 @@ export class WhatsappChannel {
 
 		const error = lastDisconnect?.error;
 		const statusCode = error?.output?.statusCode;
-		const shouldReconnect = statusCode !== DisconnectReason.loggedOut;
+		const isConnectionReplaced =
+			statusCode === DisconnectReason.connectionReplaced ||
+			error?.message?.includes("conflict") ||
+			error?.toString()?.includes("replaced");
+
+		const shouldReconnect =
+			statusCode !== DisconnectReason.loggedOut &&
+			!isConnectionReplaced &&
+			statusCode !== DisconnectReason.badSession;
 
 		if (this.#isExpectedClose) {
 			console.info(`[WP-CHANNEL] Connection closed as expected for wp: ${this.#credId}`);
@@ -104,22 +116,23 @@ export class WhatsappChannel {
 			return;
 		}
 
-		logger.error(`Connection close with status code: ${statusCode}`);
-
 		if (shouldReconnect) {
 			console.info(`[WP-CHANNEL] Restart stream of connection for wp: ${this.#credId}`);
 
-			setTimeout(
-				async () =>
-					await this.initialize({
-						credId: this.#credId,
-					}),
-				1500,
-			);
+			await this.cleanupWpSocket();
+
+			await setDelay(1500);
+
+			await this.initialize({
+				credId: this.#credId,
+			});
+
 			return;
 		}
 
-		logger.error(`Session close permanently o invalid, remove cache`);
+		logger.error(`[WP-CHANNEL] Connection close with status code: ${statusCode}`);
+		logger.error(`[WP-CHANNEL] Session close permanently or invalid, remove cache`);
+		await this.cleanupWpSocket();
 	}
 
 	#connectionUpdateOpen({ connection }) {
@@ -143,7 +156,7 @@ export class WhatsappChannel {
 			console.info(`[WP-CHANNEL] SCAN QR CODE for wp: ${this.#credId}`);
 			console.log("\n" + qrConsole);
 		} catch (error) {
-			logger.error("Error can't pair device", error);
+			logger.error(`[WP-CHANNEL] Error can't pair device`, error);
 		}
 	}
 
@@ -161,9 +174,21 @@ export class WhatsappChannel {
 		return this.#wpSock;
 	}
 
-	async send({ jid, message }) {
+	/**
+	 * @param {object} request
+	 * @param {string} request.jid - The JID of the recipient
+	 * @param {import('@whiskeysockets/baileys').AnyMessageContent} request.content
+	 */
+	async send({ jid, content }) {
 		try {
-			await this.getClient().sendMessage(jid, { text: message });
+			const client = this.getClient();
+			const formattedJid = jid.includes("@") ? jid : `${jid}@s.whatsapp.net`;
+
+			await client.sendPresenceUpdate("composing", formattedJid);
+			const delay = Math.floor(Math.random() * 500) + 1000;
+			await setDelay(delay);
+
+			await client.sendMessage(formattedJid, content);
 		} catch (error) {
 			logger.error("Error sending whatsapp message", error.message);
 			throw error;
@@ -171,22 +196,35 @@ export class WhatsappChannel {
 	}
 
 	async close() {
-		if (!this.#wpSock) {
-			return;
-		}
-
 		try {
 			this.#isExpectedClose = true;
 
-			this.#wpSock.ev.removeAllListeners("creds.update");
-			this.#wpSock.ev.removeAllListeners("connection.update");
+			await this.cleanupWpSocket();
 
-			await this.#wpSock.end(new Error("Credential update or channel closed by user"));
 			console.info(`[WP-CHANNEL] Connection closed for wp: ${this.#credId}`);
 		} catch (error) {
 			logger.error("Error closing whatsapp connection", error.message);
+		}
+	}
+
+	async cleanupWpSocket() {
+		if (this.#isCleaning || !this.#wpSock) {
+			return;
+		}
+
+		this.#isCleaning = true;
+
+		try {
+			this.#wpSock.ev.removeAllListeners("creds.update");
+			this.#wpSock.ev.removeAllListeners("connection.update");
+			this.#wpSock.ws?.close();
+			await this.#wpSock.end(new Error("Credential update or channel closed by user"));
+		} catch (error) {
+			logger.error("Error cleaning up whatsapp socket", error.message);
 		} finally {
+			this.#isConnected = false;
 			this.#wpSock = null;
+			this.#isCleaning = false;
 		}
 	}
 
