@@ -44,10 +44,11 @@ export class WhatsappAuthManager {
 	}
 
 	async getKeys({ credId, keyType, keyIds }) {
+		const normalizedIds = keyIds.map((id) => String(id));
 		return this.#whatsappKeyService.findByCredIdAndKeyTypeAndKeyIdIn({
 			credId,
 			keyType,
-			keyIds,
+			keyIds: normalizedIds,
 		});
 	}
 
@@ -58,7 +59,7 @@ export class WhatsappAuthManager {
 			data: {
 				credId,
 				keyType,
-				keyId,
+				keyId: String(keyId),
 				valueJson: keyValueStr,
 			},
 		});
@@ -69,7 +70,7 @@ export class WhatsappAuthManager {
 			await this.#whatsappKeyService.deleteByCredIdAndKeyTypeAndKeyId({
 				credId,
 				keyType,
-				keyId,
+				keyId: String(keyId),
 			});
 		} catch (error) {
 			logger.error(

@@ -28,7 +28,14 @@ export class WhatsappChannel {
 
 		const { state, saveCreds } = await useSqliteStoreCreds(this.#credId);
 
-		this.#wpSock = makeWASocket({ auth: state });
+		this.#wpSock = makeWASocket({
+			auth: state,
+			fireInitQueries: false,
+			defaultQueryTimeoutMs: 60000,
+			connectTimeoutMs: 60000,
+			keepAliveIntervalMs: 30000,
+			syncFullHistory: false,
+		});
 
 		this.#wpSock.ev.on("creds.update", saveCreds);
 
