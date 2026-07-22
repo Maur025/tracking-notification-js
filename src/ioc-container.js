@@ -47,6 +47,9 @@ import { WhatsappService } from "./whatsapp/whatsapp.service.js";
 import { WhatsappNotifier } from "./whatsapp/whatsapp-notifier.js";
 import { WhatsappProvider } from "./whatsapp/whatsapp-provider.js";
 import { ChannelController } from "./channel/channel.controller.js";
+import { ChannelCreateOrUpdateAction } from "./channel/action/channel-create-or-update.action.js";
+import { ChannelDeleteAction } from "./channel/action/channel-delete.action.js";
+import { GatewayDataChangeHandler } from "./socket/client-handler/gateway-data-change-handler.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -78,6 +81,7 @@ iocContainer.register({
 	redisApp: asClass(RedisApp).singleton(),
 	socketServerHandler: asClass(SocketServerHandler).singleton(),
 	socketClientHandler: asClass(SocketClientHandler).singleton(),
+	gatewayDataChangeHandler: asClass(GatewayDataChangeHandler).singleton(),
 
 	// bullmq workers
 	emailWorker: asClass(EmailWorker).singleton(),
@@ -139,6 +143,8 @@ iocContainer.register({
 	// actions
 	registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
 	whatsappCredChannelCreateAction: asClass(WhatsappCredChannelCreateAction).singleton(),
+	channelCreateOrUpdateAction: asClass(ChannelCreateOrUpdateAction).singleton(),
+	channelDeleteAction: asClass(ChannelDeleteAction).singleton(),
 
 	// whatsapp authentication
 	whatsappAuthManager: asClass(WhatsappAuthManager).singleton(),

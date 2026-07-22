@@ -1,22 +1,17 @@
-import { extractChannelDataParams } from "../channel/common/extract-channel-data-params.js";
-import { getChannelData } from "../common/get-channel-data.js";
-import { logger } from "../common/logger.js";
 import { transformDevicesSubscriptionsInMap } from "../common/transform-devices-subscriptions-in-map.js";
 
 export class SocketClientHandler {
 	#databaseConfigurationService;
 	#registerChannelOfDbConfigAction;
-	#axios;
 
 	/**
 	 * @param {object} request
 	 * @param {import('../company/database-configuration.service.js').DatabaseConfigurationService} request.databaseConfigurationService
 	 * @param {import('../channel/action/register-channel-of-db-config.action.js').RegisterChannelOfDbConfigAction} request.registerChannelOfDbConfigAction
 	 */
-	constructor({ databaseConfigurationService, registerChannelOfDbConfigAction, axios }) {
+	constructor({ databaseConfigurationService, registerChannelOfDbConfigAction }) {
 		this.#databaseConfigurationService = databaseConfigurationService;
 		this.#registerChannelOfDbConfigAction = registerChannelOfDbConfigAction;
-		this.#axios = axios;
 	}
 
 	onDevicesSubscriptions = async (subscriptions) => {
@@ -132,93 +127,5 @@ export class SocketClientHandler {
 		return enterpriseConfigValues.filter(
 			(config) => !dbConfigurationMap.has(`${config.referenceId}|${config.database}`),
 		);
-	}
-
-	processEventData = async ({ data, type = "INSERT" }) => {
-		console.info(`[WS-CLIENT] on${type}Data`, { data });
-
-		if (!this.#validateProcess(data, type)) {
-			return;
-		}
-
-		if (type === "DELETE") {
-			// remove in cache
-			console.log("Removing of cache");
-
-			return;
-		}
-
-		const dbConfiguration = await this.#getDatabaseConfiguration(data);
-
-		if (!dbConfiguration) {
-			console.warn(
-				`[WS-CLIENT] onProcessEventData: No database configuration found for ${data.dbName}`,
-			);
-
-			return;
-		}
-
-		const id = data.response?.id;
-
-		const url = `${dbConfiguration?.host}${dbConfiguration?.port ? `:${dbConfiguration.port}` : ""}/${dbConfiguration.database}/${data.groupName}/${id}
-		`;
-
-		const [responseData] = await this.#fetchDataFromUrl(url);
-
-		console.log(responseData);
-	};
-
-	#validateProcess(data, type) {
-		if (!data || (type !== "DELETE" && !data.dbName) || !data.groupName) {
-			return false;
-		}
-
-		if (!data.response?.id) {
-			console.warn(`[WS-CLIENT] onProcessEventData: Missing response id`);
-
-			return false;
-		}
-
-		return data.groupName === "channels" || data.groupName === "users";
-	}
-
-	async #getDatabaseConfiguration(data) {
-		try {
-			return this.#databaseConfigurationService.findOneByDatabase({
-				database: data.dbName,
-			});
-		} catch (error) {
-			logger.error(
-				`Error fetching database configuration for ${data.dbName}:`,
-				error.message,
-			);
-			return null;
-		}
-	}
-
-	async #fetchDataFromUrl(url) {
-		try {
-			const response = await this.#axios.get(url);
-			return response.data?.content ?? [];
-		} catch (error) {
-			logger.error(`Error fetching data from ${url}:`, error.message);
-		}
-	}
-
-	async getChannelPayload({ channel, type }) {
-		const channelNormalized = { ...channel, data: getChannelData(channel.data) };
-
-		const { server, port, username, password, ssl, fromphone } = extractChannelDataParams(
-			channelNormalized.data.params,
-		);
-
-		const payload = {
-			host: server,
-			port: port ? Number(port) : null,
-			username: username || fromphone,
-			password,
-			ssl: ssl ? ssl === "true" : null,
-			name: channelNormalized.name,
-		};
 	}
 }
