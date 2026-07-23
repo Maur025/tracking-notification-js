@@ -27,6 +27,8 @@ const {
 	WP_CH_DEFAULT_QUERY_TIMEOUT_MS = 60000,
 	WP_CH_CONNECT_TIMEOUT_MS = 60000,
 	WP_CH_KEEP_ALIVE_INTERVAL_MS = 30000,
+	WP_SO = "ubuntu",
+	WP_BROWSER = "chrome",
 	// Email Worker configuration
 	EMAIL_REMOVE_ON_COMPLETE = 1000,
 	EMAIL_REMOVE_ON_FAIL = 2000,
@@ -68,6 +70,8 @@ const {
  * @property {number} WP_CH_DEFAULT_QUERY_TIMEOUT_MS
  * @property {number} WP_CH_CONNECT_TIMEOUT_MS
  * @property {number} WP_CH_KEEP_ALIVE_INTERVAL_MS
+ * @property {string} WP_SO
+ * @property {string} WP_BROWSER
  * Email Worker configuration
  * @property {number} EMAIL_REMOVE_ON_COMPLETE
  * @property {number} EMAIL_REMOVE_ON_FAIL
@@ -110,6 +114,8 @@ export const environments = {
 	WP_CH_DEFAULT_QUERY_TIMEOUT_MS: Number(WP_CH_DEFAULT_QUERY_TIMEOUT_MS),
 	WP_CH_CONNECT_TIMEOUT_MS: Number(WP_CH_CONNECT_TIMEOUT_MS),
 	WP_CH_KEEP_ALIVE_INTERVAL_MS: Number(WP_CH_KEEP_ALIVE_INTERVAL_MS),
+	WP_SO,
+	WP_BROWSER,
 	// Email Worker configuration
 	EMAIL_REMOVE_ON_COMPLETE: Number(EMAIL_REMOVE_ON_COMPLETE),
 	EMAIL_REMOVE_ON_FAIL: Number(EMAIL_REMOVE_ON_FAIL),
