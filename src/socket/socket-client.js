@@ -4,6 +4,7 @@ export class SocketClient {
 	#environment;
 	#containerAdapter;
 	#socketClientHandler;
+	#gatewayDataChangeHandler;
 
 	#wsClient;
 
@@ -12,11 +13,13 @@ export class SocketClient {
 	 * @param { object} request.environments
 	 * @param {import("../container-adapter.js").ContainerAdapter} request.containerAdapter
 	 * @param {import("./socket-client-handler.js").SocketClientHandler} request.socketClientHandler
+	 * @param {import("./client-handler/gateway-data-change-handler.js").GatewayDataChangeHandler} request.gatewayDataChangeHandler
 	 */
-	constructor({ environments, containerAdapter, socketClientHandler }) {
+	constructor({ environments, containerAdapter, socketClientHandler, gatewayDataChangeHandler }) {
 		this.#environment = environments;
 		this.#containerAdapter = containerAdapter;
 		this.#socketClientHandler = socketClientHandler;
+		this.#gatewayDataChangeHandler = gatewayDataChangeHandler;
 	}
 
 	initialize() {
@@ -45,17 +48,15 @@ export class SocketClient {
 			console.log({ data });
 		});
 
-		this.#wsClient.wsClientManager.on("insert", (socket, uuid, data) => {
-			console.log("[INPUTS] insert data:", data);
-			// wsUiServer.broadcast("db.insert", data);
-		});
-		this.#wsClient.wsClientManager.on("update", (socket, uuid, data) => {
-			console.log("[INPUTS] update data:", data);
-			// wsUiServer.broadcast("db.update", data);
-		});
-		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) => {
-			console.log("[INPUTS] delete data:", data);
-		});
+		this.#wsClient.wsClientManager.on("insert", (socket, uuid, data) =>
+			this.#gatewayDataChangeHandler.processEventData({ data, type: "INSERT" }),
+		);
+		this.#wsClient.wsClientManager.on("update", (socket, uuid, data) =>
+			this.#gatewayDataChangeHandler.processEventData({ data, type: "UPDATE" }),
+		);
+		this.#wsClient.wsClientManager.on("delete", (socket, uuid, data) =>
+			this.#gatewayDataChangeHandler.processEventData({ data, type: "DELETE" }),
+		);
 
 		this.#wsClient.wsClientManager.on("enterprises", (socket, uuid, _enterprises) =>
 			this.#socketClientHandler.onManagerEnterprises(_enterprises),

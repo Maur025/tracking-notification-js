@@ -1,6 +1,7 @@
 import { abstractAction } from "../../common/abstract-action.js";
 import { getChannelData } from "../../common/get-channel-data.js";
 import { logger } from "../../common/logger.js";
+import { extractChannelDataParams } from "../common/extract-channel-data-params.js";
 
 export class RegisterChannelOfDbConfigAction extends abstractAction {
 	#databaseConfigurationService;
@@ -124,8 +125,9 @@ export class RegisterChannelOfDbConfigAction extends abstractAction {
 		const channelsToUpdate = [];
 
 		for (const channel of channels) {
-			const { server, port, username, password, ssl, fromphone } =
-				this.#extractChannelDataParams(channel.data.params);
+			const { server, port, username, password, ssl, fromphone } = extractChannelDataParams(
+				channel.data.params,
+			);
 
 			const payload = {
 				host: server,
@@ -161,16 +163,6 @@ export class RegisterChannelOfDbConfigAction extends abstractAction {
 		if (channelsToUpdate.length > 0) {
 			await this.#channelService.updateBulk(channelsToUpdate);
 		}
-	}
-
-	#extractChannelDataParams(channelDataParams = []) {
-		const dataFields = {};
-
-		for (const row of channelDataParams) {
-			dataFields[row.field] = row.value;
-		}
-
-		return dataFields;
 	}
 
 	async #getRegisteredChannels() {

@@ -86,4 +86,21 @@ export class ChannelService extends BaseDbService {
 				return null;
 		}
 	}
+
+	async deleteByReferenceId({ referenceId }) {
+		await this.processTransaction(async (transaction) => {
+			const [channel] = await transaction
+				.select()
+				.from(this._table)
+				.where(this._drizzleOrm.eq(this._table.referenceId, referenceId));
+
+			await transaction
+				.delete(channelAssignWpCredsTable)
+				.where(this._drizzleOrm.eq(channelAssignWpCredsTable.channelId, channel.id));
+
+			await transaction
+				.delete(this._table)
+				.where(this._drizzleOrm.eq(referenceId, this._table.referenceId));
+		});
+	}
 }

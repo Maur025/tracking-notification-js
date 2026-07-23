@@ -182,7 +182,8 @@ export class BaseDbService {
 	}
 
 	/**
-	 * @param {Function} processCallback
+	 * @typedef {import("drizzle-orm/libsql").LibSQLTransaction} Transaction
+	 * @param {(transaction:Transaction)=>any} processCallback
 	 * @param {Function|undefined} errorCallback
 	 */
 	async processTransaction(processCallback, errorCallback) {

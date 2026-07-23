@@ -15,4 +15,15 @@ export class ChannelTypeService extends BaseDbService {
 			tableName: "channelTypesTable",
 		});
 	}
+
+	async findOneByCode({ code }) {
+		const config = this.getConfigWithData();
+
+		return this._dbClient.query[this._tableName].findFirst({
+			...config,
+			where: {
+				code,
+			},
+		});
+	}
 }
