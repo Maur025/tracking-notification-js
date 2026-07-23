@@ -94,9 +94,11 @@ export class ChannelService extends BaseDbService {
 				.from(this._table)
 				.where(this._drizzleOrm.eq(this._table.referenceId, referenceId));
 
-			await transaction
-				.delete(channelAssignWpCredsTable)
-				.where(this._drizzleOrm.eq(channelAssignWpCredsTable.channelId, channel.id));
+			if (channel) {
+				await transaction
+					.delete(channelAssignWpCredsTable)
+					.where(this._drizzleOrm.eq(channelAssignWpCredsTable.channelId, channel.id));
+			}
 
 			await transaction
 				.delete(this._table)
