@@ -1,4 +1,8 @@
-import makeWASocket, { DisconnectReason, fetchLatestBaileysVersion } from "@whiskeysockets/baileys";
+import makeWASocket, {
+	Browsers,
+	DisconnectReason,
+	fetchLatestBaileysVersion,
+} from "@whiskeysockets/baileys";
 import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 import QRCode from "qrcode";
 import { logger } from "../common/logger.js";
@@ -24,6 +28,48 @@ export class WhatsappChannel {
 		this.#environment = environment;
 	}
 
+	#getWpBrowser(so, browser) {
+		switch (so) {
+			case "ubuntu": {
+				return Browsers.ubuntu(this.#getBrowserLabel(browser));
+			}
+			case "mac": {
+				return Browsers.macOS(this.#getBrowserLabel(browser));
+			}
+			case "windows": {
+				return Browsers.windows(this.#getBrowserLabel(browser));
+			}
+			default: {
+				return Browsers.ubuntu(this.#getBrowserLabel(browser));
+			}
+		}
+	}
+
+	#getBrowserLabel(browser) {
+		if (!browser) {
+			return "Chrome";
+		}
+
+		const normalizedBrowser = browser.toLowerCase();
+		switch (normalizedBrowser) {
+			case "chrome": {
+				return "Chrome";
+			}
+			case "firefox": {
+				return "Firefox";
+			}
+			case "safari": {
+				return "Safari";
+			}
+			case "edge": {
+				return "Edge";
+			}
+			default: {
+				return "Chrome";
+			}
+		}
+	}
+
 	async initialize({ credId }) {
 		if (credId && !this.#credId) {
 			this.#credId = credId;
@@ -39,6 +85,7 @@ export class WhatsappChannel {
 		this.#wpSock = makeWASocket({
 			auth: state,
 			version,
+			browser: this.#getWpBrowser(this.#environment.WP_SO, this.#environment.WP_BROWSER),
 			fireInitQueries: false,
 			defaultQueryTimeoutMs: this.#environment.WP_CH_DEFAULT_QUERY_TIMEOUT_MS,
 			connectTimeoutMs: this.#environment.WP_CH_CONNECT_TIMEOUT_MS,
