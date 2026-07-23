@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   redis:
-    image: redis/redis-stack:latest
+    image: ${REDIS_IMAGE}
     container_name: redis
     hostname: redis
     ports:
@@ -20,7 +20,7 @@ services:
       - compose-net
     restart: unless-stopped
   tracking-notification-js-container:
-    image: maur025/tracking-notification-js:0.0.4
+    image: ${TRACKING_NOTIFICATION_JS_IMAGE}
     container_name: tracking-notification-js-container
     hostname: tracking-notification-js-container
     ports:
