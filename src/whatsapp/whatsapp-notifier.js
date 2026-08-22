@@ -16,7 +16,7 @@ export class WhatsappNotifier extends Notifier {
 		this.#channelService = channelService;
 	}
 
-	async send({ toList, channelId, message }) {
+	async send({ toList, channelId, message, type, url, mimetype, fileName }) {
 		const whatsappChannelData = await this.#channelService.findOneByFilters({
 			channelType: "whatsapp",
 			channelReferenceId: channelId,
@@ -46,9 +46,26 @@ export class WhatsappNotifier extends Notifier {
 
 			const jid = `${to}@s.whatsapp.net`;
 
-			await whatsappChannel.send({ jid, content: { text: message } });
+			const content = this.getContent({ message, type, url, mimetype, fileName });
+
+			await whatsappChannel.send({ jid, content });
 
 			await setDelay(1000 + noise);
+		}
+	}
+
+	getContent({ message, type, url, mimetype, fileName }) {
+		const captionObject = message ? { caption: message } : {};
+
+		switch (type) {
+			case "TEXT":
+				return { text: message };
+			case "DOCUMENT":
+				return { document: { url }, mimetype, fileName, ...captionObject };
+			case "VIDEO":
+				return { video: { url }, gifPlayback: false, ...captionObject };
+			case "IMAGE":
+				return { image: { url }, ...captionObject };
 		}
 	}
 }
