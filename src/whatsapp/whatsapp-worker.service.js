@@ -10,12 +10,7 @@ export class WhatsappWorkerService {
 	}
 
 	async sendNotification({ jobData }) {
-		if (
-			!jobData.message ||
-			!jobData.toList ||
-			jobData.toList.length === 0 ||
-			!jobData.channelId
-		) {
+		if (!jobData.toList || jobData.toList.length === 0 || !jobData.channelId) {
 			console.error("Invalid whatsapp notification data");
 			return;
 		}
