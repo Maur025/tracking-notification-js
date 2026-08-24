@@ -23,20 +23,26 @@ export class WhatsappService {
 
 			const channelIndex = indexChunk % requestData.channelIds.length;
 
-			const newJobResponse = await this.#whatsappQueue.addToQueue(
-				workerJobNames.WHATSAPP_SEND_NOTIFICATION,
-				{
-					toList: chunk,
-					channelId: requestData.channelIds[channelIndex],
-					message: requestData.message,
-					type: requestData.type,
-					url: requestData.url,
-					mimetype: requestData.mimetype,
-					fileName: requestData.fileName,
-				},
-			);
+			for (const to of chunk) {
+				if (!to?.trim()) {
+					continue;
+				}
 
-			jobResponses.push(newJobResponse);
+				const newJobResponse = await this.#whatsappQueue.addToQueue(
+					workerJobNames.WHATSAPP_SEND_NOTIFICATION,
+					{
+						to,
+						channelId: requestData.channelIds[channelIndex],
+						message: requestData.message,
+						type: requestData.type,
+						url: requestData.url,
+						mimetype: requestData.mimetype,
+						fileName: requestData.fileName,
+					},
+				);
+
+				jobResponses.push(newJobResponse);
+			}
 
 			indexChunk++;
 		}
