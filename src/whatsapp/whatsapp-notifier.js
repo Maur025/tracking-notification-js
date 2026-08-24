@@ -42,7 +42,7 @@ export class WhatsappNotifier extends Notifier {
 				continue;
 			}
 
-			const noise = Math.floor(Math.random() * 300 + 50);
+			const noise = Math.floor(Math.random() * 600 + 50);
 
 			const jid = `${to}@s.whatsapp.net`;
 
@@ -50,16 +50,17 @@ export class WhatsappNotifier extends Notifier {
 
 			await whatsappChannel.send({ jid, content });
 
-			await setDelay(1000 + noise);
+			await setDelay(20000 + noise);
 		}
 	}
 
+	/** @returns {import("@whiskeysockets/baileys").AnyMessageContent} */
 	getContent({ message, type, url, mimetype, fileName }) {
 		const captionObject = message ? { caption: message } : {};
 
 		switch (type) {
 			case "TEXT":
-				return { text: message };
+				return { text: message, linkPreview: null };
 			case "DOCUMENT":
 				return { document: { url }, mimetype, fileName, ...captionObject };
 			case "VIDEO":
