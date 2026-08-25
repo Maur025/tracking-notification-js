@@ -1,5 +1,4 @@
 import { Notifier } from "../common/notifier.js";
-import { setDelay } from "../common/set-delay.js";
 
 export class WhatsappNotifier extends Notifier {
 	#whatsappProvider;
@@ -16,7 +15,7 @@ export class WhatsappNotifier extends Notifier {
 		this.#channelService = channelService;
 	}
 
-	async send({ toList, channelId, message, type, url, mimetype, fileName }) {
+	async send({ to, channelId, message, type, url, mimetype, fileName }) {
 		const whatsappChannelData = await this.#channelService.findOneByFilters({
 			channelType: "whatsapp",
 			channelReferenceId: channelId,
@@ -37,21 +36,21 @@ export class WhatsappNotifier extends Notifier {
 			credId: whatsappChannelData.whatsappCreds[0].whatsappCredId,
 		});
 
-		for (const to of toList) {
-			if (!to || to.trim() === "") {
-				continue;
-			}
+		// for (const to of toList) {
+		// 	if (!to || to.trim() === "") {
+		// 		continue;
+		// 	}
 
-			const noise = Math.floor(Math.random() * 600 + 50);
+		// 	const noise = Math.floor(Math.random() * 600 + 50);
 
-			const jid = `${to}@s.whatsapp.net`;
+		const jid = `${to}@s.whatsapp.net`;
 
-			const content = this.getContent({ message, type, url, mimetype, fileName });
+		const content = this.getContent({ message, type, url, mimetype, fileName });
 
-			await whatsappChannel.send({ jid, content });
+		await whatsappChannel.send({ jid, content });
 
-			await setDelay(20000 + noise);
-		}
+		// 	await setDelay(20000 + noise);
+		// }
 	}
 
 	/** @returns {import("@whiskeysockets/baileys").AnyMessageContent} */

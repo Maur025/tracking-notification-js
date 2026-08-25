@@ -17,10 +17,11 @@ const {
 	WP_REMOVE_ON_COMPLETE = 1000,
 	WP_REMOVE_ON_FAIL = 2500,
 	WP_LIMITER_MAX = 1,
-	WP_LIMITER_DURATION = 1000,
+	WP_LIMITER_DURATION = 20000,
 	WP_LIMITER_GROUP_KEY = "channelId",
 	WP_CONCURRENCY = 10,
 	// Whatsapp Queue configuration
+	WP_QUEUE_DELAY = 20000,
 	WP_QUEUE_ATTEMPTS = 6,
 	WP_QUEUE_BACKOFF_DELAY = 10000,
 	// Whatsapp Channel configuration
@@ -64,6 +65,7 @@ const {
  * @property {string} WP_LIMITER_GROUP_KEY
  * @property {number} WP_CONCURRENCY
  * Whatsapp Queue configuration
+ * @property {number} WP_QUEUE_DELAY
  * @property {number} WP_QUEUE_ATTEMPTS
  * @property {number} WP_QUEUE_BACKOFF_DELAY
  * Whatsapp Channel configuration
@@ -108,6 +110,7 @@ export const environments = {
 	WP_LIMITER_GROUP_KEY,
 	WP_CONCURRENCY: Number(WP_CONCURRENCY),
 	// Whatsapp Queue configuration
+	WP_QUEUE_DELAY: Number(WP_QUEUE_DELAY),
 	WP_QUEUE_ATTEMPTS: Number(WP_QUEUE_ATTEMPTS),
 	WP_QUEUE_BACKOFF_DELAY: Number(WP_QUEUE_BACKOFF_DELAY),
 	// Whatsapp Channel configuration

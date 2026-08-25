@@ -3,10 +3,10 @@ import makeWASocket, {
 	DisconnectReason,
 	fetchLatestBaileysVersion,
 } from "@whiskeysockets/baileys";
-import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 import QRCode from "qrcode";
 import { logger } from "../common/logger.js";
 import { setDelay } from "../common/set-delay.js";
+import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 
 export class WhatsappChannel {
 	/** @type {ReturnType<typeof makeWASocket>} */
@@ -232,7 +232,7 @@ export class WhatsappChannel {
 			const formattedJid = jid.includes("@") ? jid : `${jid}@s.whatsapp.net`;
 
 			await client.sendPresenceUpdate("composing", formattedJid);
-			const delay = Math.floor(Math.random() * 500) + 1000;
+			const delay = Math.floor(Math.random() * 1000) + 1000;
 			await setDelay(delay);
 
 			await client.sendMessage(formattedJid, content);
