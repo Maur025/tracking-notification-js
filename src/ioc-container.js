@@ -1,55 +1,55 @@
 import { asClass, asFunction, asValue, createContainer, InjectionMode, listModules } from "awilix";
-import { environments } from "./environments.js";
+import axios from "axios";
+import bullmq from "bullmq";
+import * as drizzleOrm from "drizzle-orm";
 import express from "express";
 import ioredis from "ioredis";
-import bullmq from "bullmq";
 import nodemailer from "nodemailer";
 import playwright from "playwright";
-import * as drizzleOrm from "drizzle-orm";
-import axios from "axios";
-import { ServerApp } from "./server/server-app.js";
-import { WhatsappController } from "./whatsapp/whatsapp.controller.js";
-import { EmailController } from "./email/email.controller.js";
-import { SocketServer } from "./socket/socket-server.js";
 import { ContainerAdapter } from "./container-adapter.js";
+import { EmailController } from "./email/email.controller.js";
+import { environments } from "./environments.js";
 import { RedisApp } from "./redis/redis-app.js";
-import { EmailWorker } from "./email/email-worker.js";
-import { EmailWorkerService } from "./email/email-worker.service.js";
-import { EmailQueue } from "./email/email-queue.js";
+import { ServerApp } from "./server/server-app.js";
+import { SocketServer } from "./socket/socket-server.js";
+import { WhatsappController } from "./whatsapp/whatsapp.controller.js";
+// import { EmailWorker } from "./email/email-worker.js";
+// import { EmailWorkerService } from "./email/email-worker.service.js";
+// import { EmailQueue } from "./email/email-queue.js";
+import { WhatsappQueue } from "./whatsapp/whatsapp-queue.js";
 import { WhatsappWorker } from "./whatsapp/whatsapp-worker.js";
 import { WhatsappWorkerService } from "./whatsapp/whatsapp-worker.service.js";
-import { WhatsappQueue } from "./whatsapp/whatsapp-queue.js";
-import { SmsWorker } from "./sms/sms-worker.js";
-import { SmsWorkerService } from "./sms/sms-worker.service.js";
-import { SmsQueue } from "./sms/sms-queue.js";
+// import { SmsWorker } from "./sms/sms-worker.js";
+// import { SmsWorkerService } from "./sms/sms-worker.service.js";
+// import { SmsQueue } from "./sms/sms-queue.js";
 import { SmsController } from "./sms/sms.controller.js";
-import { SocketClient } from "./socket/socket-client.js";
-import { EmailProvider } from "./email/email-provider.js";
-import { EmailNotifier } from "./email/email-notifier.js";
-import { DatabaseProvider } from "./db/database-provider.js";
-import { CompanyService } from "./company/company.service.js";
-import { DbSeed } from "./db/db-seed.js";
+// import { SocketClient } from "./socket/socket-client.js";
+// import { EmailProvider } from "./email/email-provider.js";
+// import { EmailNotifier } from "./email/email-notifier.js";
 import { ChannelTypeService } from "./channel/channel-type.service.js";
 import { ChannelService } from "./channel/channel.service.js";
-import { EmailService } from "./email/email.service.js";
+import { CompanyService } from "./company/company.service.js";
+import { DatabaseProvider } from "./db/database-provider.js";
+import { DbSeed } from "./db/db-seed.js";
+// import { EmailService } from "./email/email.service.js";
+import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
 import { ErrorHandler } from "./server/error-handler.js";
 import { SocketServerHandler } from "./socket/socket-server-handler.js";
-import { DatabaseConfigurationService } from "./company/database-configuration.service.js";
-import { SocketClientHandler } from "./socket/socket-client-handler.js";
-import { RegisterChannelOfDbConfigAction } from "./channel/action/register-channel-of-db-config.action.js";
+// import { SocketClientHandler } from "./socket/socket-client-handler.js";
+// import { RegisterChannelOfDbConfigAction } from "./channel/action/register-channel-of-db-config.action.js";
+import { ChannelCreateOrUpdateAction } from "./channel/action/channel-create-or-update.action.js";
+import { ChannelDeleteAction } from "./channel/action/channel-delete.action.js";
+import { ChannelAssignWpCredService } from "./channel/channel-assign-wp-cred.service.js";
+import { ChannelController } from "./channel/channel.controller.js";
+import { GatewayDataChangeHandler } from "./socket/client-handler/gateway-data-change-handler.js";
+import { WhatsappCredChannelCreateAction } from "./whatsapp/action/whatsapp-cred-channel-create.action.js";
 import { WhatsappCredService } from "./whatsapp/services/whatsapp-cred.service.js";
 import { WhatsappKeyService } from "./whatsapp/services/whatsapp-key.service.js";
 import { WhatsappAuthManager } from "./whatsapp/whatsapp-auth-manager.js";
 import { WhatsappAuthentication } from "./whatsapp/whatsapp-authentication.js";
-import { ChannelAssignWpCredService } from "./channel/channel-assign-wp-cred.service.js";
-import { WhatsappCredChannelCreateAction } from "./whatsapp/action/whatsapp-cred-channel-create.action.js";
-import { WhatsappService } from "./whatsapp/whatsapp.service.js";
 import { WhatsappNotifier } from "./whatsapp/whatsapp-notifier.js";
 import { WhatsappProvider } from "./whatsapp/whatsapp-provider.js";
-import { ChannelController } from "./channel/channel.controller.js";
-import { ChannelCreateOrUpdateAction } from "./channel/action/channel-create-or-update.action.js";
-import { ChannelDeleteAction } from "./channel/action/channel-delete.action.js";
-import { GatewayDataChangeHandler } from "./socket/client-handler/gateway-data-change-handler.js";
+import { WhatsappService } from "./whatsapp/whatsapp.service.js";
 
 const iocContainer = createContainer({
 	injectionMode: InjectionMode.PROXY,
@@ -80,29 +80,29 @@ iocContainer.register({
 	errorHandler: asClass(ErrorHandler).singleton(),
 	redisApp: asClass(RedisApp).singleton(),
 	socketServerHandler: asClass(SocketServerHandler).singleton(),
-	socketClientHandler: asClass(SocketClientHandler).singleton(),
+	// socketClientHandler: asClass(SocketClientHandler).singleton(),
 	gatewayDataChangeHandler: asClass(GatewayDataChangeHandler).singleton(),
 
 	// bullmq workers
-	emailWorker: asClass(EmailWorker).singleton(),
+	// emailWorker: asClass(EmailWorker).singleton(),
 	whatsappWorker: asClass(WhatsappWorker).singleton(),
-	smsWorker: asClass(SmsWorker).singleton(),
+	// smsWorker: asClass(SmsWorker).singleton(),
 
 	// worker services
-	emailWorkerService: asClass(EmailWorkerService).singleton(),
+	// emailWorkerService: asClass(EmailWorkerService).singleton(),
 	whatsappWorkerService: asClass(WhatsappWorkerService).singleton(),
-	smsWorkerService: asClass(SmsWorkerService).singleton(),
+	// smsWorkerService: asClass(SmsWorkerService).singleton(),
 
 	// bullmq queues
-	emailQueue: asClass(EmailQueue).singleton(),
+	// emailQueue: asClass(EmailQueue).singleton(),
 	whatsappQueue: asClass(WhatsappQueue).singleton(),
-	smsQueue: asClass(SmsQueue).singleton(),
+	// smsQueue: asClass(SmsQueue).singleton(),
 
 	// socket server
 	socketServer: asClass(SocketServer).singleton(),
 
 	// socket client
-	socketClient: asClass(SocketClient).singleton(),
+	// socketClient: asClass(SocketClient).singleton(),
 
 	//Controllers
 	whatsappController: asClass(WhatsappController).singleton(),
@@ -117,11 +117,11 @@ iocContainer.register({
 
 	// providers
 	databaseProvider: asClass(DatabaseProvider).singleton(),
-	emailProvider: asClass(EmailProvider).singleton(),
+	// emailProvider: asClass(EmailProvider).singleton(),
 	whatsappProvider: asClass(WhatsappProvider).singleton(),
 
 	// notifiers
-	emailNotifier: asClass(EmailNotifier).singleton(),
+	// emailNotifier: asClass(EmailNotifier).singleton(),
 	whatsappNotifier: asClass(WhatsappNotifier).singleton(),
 
 	// db services
@@ -137,11 +137,11 @@ iocContainer.register({
 	dbSeed: asClass(DbSeed).singleton(),
 
 	// controller services
-	emailService: asClass(EmailService).singleton(),
+	// emailService: asClass(EmailService).singleton(),
 	whatsappService: asClass(WhatsappService).singleton(),
 
 	// actions
-	registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
+	// registerChannelOfDbConfigAction: asClass(RegisterChannelOfDbConfigAction).singleton(),
 	whatsappCredChannelCreateAction: asClass(WhatsappCredChannelCreateAction).singleton(),
 	channelCreateOrUpdateAction: asClass(ChannelCreateOrUpdateAction).singleton(),
 	channelDeleteAction: asClass(ChannelDeleteAction).singleton(),

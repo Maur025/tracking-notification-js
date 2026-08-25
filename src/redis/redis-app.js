@@ -23,6 +23,10 @@ export class RedisApp {
 			host: this.#environments.REDIS_HOST,
 			port: this.#environments.REDIS_PORT,
 			maxRetriesPerRequest: null,
+			keepAlive: 10000,
+			retryStrategy: (times) => {
+				return Math.min(times * 500, 2000);
+			},
 		});
 
 		console.info(
@@ -33,9 +37,27 @@ export class RedisApp {
 	}
 
 	async close() {
-		if (this.#redisConnection) {
-			await this.#redisConnection.quit();
-			console.info("[IOREDIS] Redis connection closed");
+		if (!this.#redisConnection) return;
+
+		const status = this.#redisConnection.status;
+
+		console.log(status);
+
+		if (status === "end" || status === "close") {
+			this.#redisConnection.disconnect();
+			return;
+		}
+
+		try {
+			await Promise.race([
+				this.#redisConnection.quit(),
+				new Promise((_, reject) =>
+					setTimeout(() => reject(new Error("Redis quit timeout")), 2000),
+				),
+			]);
+		} catch (err) {
+			console.warn("[IOREDIS] Error closing Redis connection, forcing disconnection", err);
+			this.#redisConnection.disconnect();
 		}
 	}
 

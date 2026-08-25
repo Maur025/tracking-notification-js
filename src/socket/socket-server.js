@@ -19,12 +19,12 @@ export class SocketServer {
 		console.info("[WS-SERVER-LISTEN] Configuring WebSocket listeners...");
 
 		this.#wsServer.on("connection", (socket) => {
-			socket.on(SocketServerTopics.EMAIL_ADD_TO_QUEUE, (data) => {
-				this.#socketServerHandler.emailAddToQueueHandler(data);
-			});
-			socket.on(SocketServerTopics.SMS_ADD_TO_QUEUE, (data) => {
-				this.#socketServerHandler.smsAddToQueueHandler(data);
-			});
+			// socket.on(SocketServerTopics.EMAIL_ADD_TO_QUEUE, (data) => {
+			// 	this.#socketServerHandler.emailAddToQueueHandler(data);
+			// });
+			// socket.on(SocketServerTopics.SMS_ADD_TO_QUEUE, (data) => {
+			// 	this.#socketServerHandler.smsAddToQueueHandler(data);
+			// });
 			socket.on(SocketServerTopics.WHATSAPP_ADD_TO_QUEUE, (data) => {
 				this.#socketServerHandler.whatsappAddToQueueHandler(data);
 			});
