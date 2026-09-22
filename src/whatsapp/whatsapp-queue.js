@@ -26,11 +26,8 @@ export class WhatsappQueue {
 	async addToQueue(jobName, payload) {
 		const { WP_QUEUE_ATTEMPTS, WP_QUEUE_BACKOFF_DELAY, WP_QUEUE_DELAY } = this.#environment;
 
-		const noise = Math.floor(Math.random() * 2000 + 500);
-		const accumulateDelay = WP_QUEUE_DELAY + noise;
-
 		const job = await this.#whatsappQueue.add(jobName, payload, {
-			delay: accumulateDelay,
+			delay: WP_QUEUE_DELAY,
 			attempts: WP_QUEUE_ATTEMPTS,
 			backoff: { type: "exponential", delay: WP_QUEUE_BACKOFF_DELAY },
 		});

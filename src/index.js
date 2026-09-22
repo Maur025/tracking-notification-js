@@ -1,8 +1,8 @@
 import "dotenv/config";
-import { logger } from "./common/logger.js";
-import { iocContainer } from "./ioc-container.js";
-import { Scheduler } from "./common/scheduler.cjs";
 import { NodeControllerServer } from "tracking-common";
+import { logger } from "./common/logger.js";
+import { Scheduler } from "./common/scheduler.cjs";
+import { iocContainer } from "./ioc-container.js";
 
 async function bootstrap() {
 	const environment = iocContainer.resolve("environments");
@@ -53,7 +53,7 @@ async function bootstrap() {
 	} catch (error) {
 		logger.error("Error starting the application:", error);
 
-		process.exit(1);
+		await handleShutdown("BOOTSTRAP_ERROR");
 	}
 }
 
@@ -108,8 +108,6 @@ const handleShutdown = async (signal) => {
 	}
 };
 
-bootstrap();
-
 process.on("SIGINT", () => handleShutdown("SIGINT"));
 
 process.on("SIGTERM", () => handleShutdown("SIGTERM"));
@@ -123,3 +121,5 @@ process.on("unhandledRejection", (reason, promise) => {
 	logger.error("Unhandled Rejection at:", promise, "reason:", reason);
 	handleShutdown("unhandledRejection");
 });
+
+bootstrap();
