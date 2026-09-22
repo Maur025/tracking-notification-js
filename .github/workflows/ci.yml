@@ -1,53 +1,56 @@
 name: CI notification
 
 on:
-  push:
-    branches: [main, develop]
-  pull_request:
-    branches: [main, develop]
+    push:
+        branches: [main, develop]
+    pull_request:
+        branches: [main, develop]
 
 jobs:
-  review-and-test:
-    runs-on: ubuntu-latest
+    review-and-test:
+        runs-on: ubuntu-latest
 
-    strategy:
-      matrix:
-        node-version: [24]
-    
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v7
+        strategy:
+            matrix:
+                node-version: [24]
 
-      - name: Setup pnpm
-        uses: pnpm/action-setup@v6
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v7
 
-      - name: Setup node ${{ matrix.node-version }}
-        uses: actions/setup-node@v7
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: "pnpm"
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v6
 
-      - name: Install SSH key
-        uses: shimataro/ssh-key-action@v2
-        with:
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          known_hosts: 'unimportant'
-          if_key_exists: replace
-      
-      - name: Adding Know Host
-        run: ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
+            - name: Setup node ${{ matrix.node-version }}
+              uses: actions/setup-node@v7
+              with:
+                  node-version: ${{ matrix.node-version }}
+                  cache: "pnpm"
 
-      - name: update tracking-common dependency
-        run: sed -i "s|\"file:../tracking-common\"|\"git+ssh://git@github.com/Maur025/tracking-common.git#main\"|g" package.json
+            - name: Install SSH key
+              uses: shimataro/ssh-key-action@v2
+              with:
+                  key: ${{ secrets.SSH_PRIVATE_KEY }}
+                  known_hosts: "unimportant"
+                  if_key_exists: replace
 
-      - name: Install dependencies
-        run: |
-          pnpm install --lockfile-only
-          pnpm install --frozen-lockfile
+            - name: Adding Know Host
+              run: ssh-keyscan -t ed25519 github.com >> ~/.ssh/known_hosts
 
-      - name: Syntax check
-        run: pnpm lint
-        continue-on-error: false
+            - name: Configure git to use SSH
+              run: git config --global url."git@github.com:".insteadOf "https://github.com/"
 
-      - name: Run unit tests
-        run: pnpm test
+            - name: update tracking-common dependency
+              run: sed -i "s|\"file:../tracking-common\"|\"github:Maur025/tracking-common#main\"|g" package.json
+
+            - name: Install dependencies
+              run: |
+                  pnpm install --lockfile-only
+                  pnpm install --frozen-lockfile
+
+            - name: Syntax check
+              run: pnpm lint
+              continue-on-error: false
+
+            - name: Run unit tests
+              run: pnpm test
