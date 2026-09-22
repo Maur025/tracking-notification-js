@@ -8,6 +8,8 @@ import { logger } from "../common/logger.js";
 import { setDelay } from "../common/set-delay.js";
 import { useSqliteStoreCreds } from "./use-sqlite-store-creds.js";
 
+const MAX_QR_ATTEMPTS = 4;
+
 export class WhatsappChannel {
 	/** @type {ReturnType<typeof makeWASocket>} */
 	#wpSock;
@@ -23,6 +25,13 @@ export class WhatsappChannel {
 	#environment;
 	#MAX_RETRIES = 3;
 
+	#qrAttempts = 0;
+
+	/**
+	 * @param {{
+	 *  environment: import('../environments.js').Environments
+	 * }} request
+	 */
 	constructor({ environment }) {
 		this.#isConnected = false;
 		this.#environment = environment;
@@ -126,14 +135,14 @@ export class WhatsappChannel {
 	async #setOnConnectionUpdate({ update }) {
 		const { connection, lastDisconnect, qr } = update;
 
+		await this.#handleQrCode(qr);
+
+		this.#connectionUpdateOpen({ connection, qr });
+
 		await this.#connectionUpdateClose({
 			connection,
 			lastDisconnect,
 		});
-
-		this.#connectionUpdateOpen({ connection });
-
-		await this.#handleQrCode(qr);
 	}
 
 	async #connectionUpdateClose({ connection, lastDisconnect }) {
@@ -182,12 +191,17 @@ export class WhatsappChannel {
 		await this.cleanupWpSocket();
 	}
 
-	#connectionUpdateOpen({ connection }) {
+	#connectionUpdateOpen({ connection, qr }) {
 		if (connection !== "open") {
 			return;
 		}
 
-		this.#isConnected = true;
+		if (connection === "open" && !qr) {
+			this.#qrAttempts = 0;
+
+			this.#isConnected = true;
+		}
+
 		console.info(`[WP-CHANNEL] Connection successful for wp: ${this.#credId}`);
 	}
 
@@ -196,10 +210,23 @@ export class WhatsappChannel {
 			return;
 		}
 
+		this.#qrAttempts++;
+
+		console.info(
+			`[WP-CHANNEL] QR code received for wp: ${this.#credId}. Attempt ${this.#qrAttempts} of ${MAX_QR_ATTEMPTS}`,
+		);
+
+		if (this.#qrAttempts > MAX_QR_ATTEMPTS) {
+			console.error("[WP-CHANNEL] Maximum QR code attempts reached. closing connection.");
+
+			await this.close();
+
+			return;
+		}
+
 		try {
 			const qrConsole = await QRCode.toString(qr, { type: "terminal", small: true });
 
-			// console.clear();
 			console.info(`[WP-CHANNEL] SCAN QR CODE for wp: ${this.#credId}`);
 			console.log("\n" + qrConsole);
 		} catch (error) {
